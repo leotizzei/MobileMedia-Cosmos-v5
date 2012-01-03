@@ -1,0 +1,183 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<HTML>
+<HEAD>
+<LINK REL=STYLESHEET TYPE="text/css" HREF="../../../../../../../stylesheet.css" TITLE="Style">
+<META NAME="GENERATOR" CONTENT="Java2HTML Version 1.5">
+<TITLE>br.unicamp.ic.sed.mobilemedia.photo.impl.PhotoViewController (Java2HTML)</TITLE>
+</HEAD>
+<BODY><TABLE id="Header" border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td colspan="2" width="33%">&nbsp;</td>
+<td align="center" colspan="2" width="33%">
+<font size="4">PhotoViewController.java</font>
+</td>
+<td align="right" colspan="2" width="33%">&nbsp;</td>
+</tr>
+</TABLE>
+<pre ID="Classes">
+<FONT ID="LN">1   </FONT><A NAME="1"></A><FONT ID="FormalComment">/**
+<FONT ID="LN">2   </FONT><A NAME="2"></A> * University of Campinas - Brazil
+<FONT ID="LN">3   </FONT><A NAME="3"></A> * Institute of Computing
+<FONT ID="LN">4   </FONT><A NAME="4"></A> * SED group
+<FONT ID="LN">5   </FONT><A NAME="5"></A> *
+<FONT ID="LN">6   </FONT><A NAME="6"></A> * date: February 2009
+<FONT ID="LN">7   </FONT><A NAME="7"></A> * 
+<FONT ID="LN">8   </FONT><A NAME="8"></A> */</FONT>
+<FONT ID="LN">9   </FONT><A NAME="9"></A><FONT ID="Package">package</FONT> br.unicamp.ic.sed.mobilemedia.photo.impl;
+<FONT ID="LN">10  </FONT><A NAME="10"></A>
+<FONT ID="LN">11  </FONT><A NAME="11"></A><FONT ID="Import">import</FONT> javax.microedition.lcdui.Command;
+<FONT ID="LN">12  </FONT><A NAME="12"></A><FONT ID="Import">import</FONT> javax.microedition.lcdui.Display;
+<FONT ID="LN">13  </FONT><A NAME="13"></A><FONT ID="Import">import</FONT> javax.microedition.lcdui.Image;
+<FONT ID="LN">14  </FONT><A NAME="14"></A><FONT ID="Import">import</FONT> javax.microedition.midlet.MIDlet;
+<FONT ID="LN">15  </FONT><A NAME="15"></A>
+<FONT ID="LN">16  </FONT><A NAME="16"></A><FONT ID="Import">import</FONT> <A HREF="../../../../../../../main/IImageData.java.html">main.IImageData</A>;
+<FONT ID="LN">17  </FONT><A NAME="17"></A><FONT ID="Import">import</FONT> <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/photo/spec/dt/Constants.java.html">br.unicamp.ic.sed.mobilemedia.photo.spec.dt.Constants</A>;
+<FONT ID="LN">18  </FONT><A NAME="18"></A><FONT ID="Import">import</FONT> <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/photo/spec/excep/ImageNotFoundException.java.html">br.unicamp.ic.sed.mobilemedia.photo.spec.excep.ImageNotFoundException</A>;
+<FONT ID="LN">19  </FONT><A NAME="19"></A><FONT ID="Import">import</FONT> <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/photo/spec/excep/InvalidImageDataException.java.html">br.unicamp.ic.sed.mobilemedia.photo.spec.excep.InvalidImageDataException</A>;
+<FONT ID="LN">20  </FONT><A NAME="20"></A><FONT ID="Import">import</FONT> <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/photo/spec/excep/NullAlbumDataReference.java.html">br.unicamp.ic.sed.mobilemedia.photo.spec.excep.NullAlbumDataReference</A>;
+<FONT ID="LN">21  </FONT><A NAME="21"></A><FONT ID="Import">import</FONT> <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/photo/spec/excep/PersistenceMechanismException.java.html">br.unicamp.ic.sed.mobilemedia.photo.spec.excep.PersistenceMechanismException</A>;
+<FONT ID="LN">22  </FONT><A NAME="22"></A><FONT ID="Import">import</FONT> <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/photo/spec/excep/UnavailablePhotoAlbumException.java.html">br.unicamp.ic.sed.mobilemedia.photo.spec.excep.UnavailablePhotoAlbumException</A>;
+<FONT ID="LN">23  </FONT><A NAME="23"></A><FONT ID="Import">import</FONT> <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/photo/spec/prov/IManager.java.html">br.unicamp.ic.sed.mobilemedia.photo.spec.prov.IManager</A>;
+<FONT ID="LN">24  </FONT><A NAME="24"></A><FONT ID="Import">import</FONT> <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/photo/spec/req/IFilesystem.java.html">br.unicamp.ic.sed.mobilemedia.photo.spec.req.IFilesystem</A>;
+<FONT ID="LN">25  </FONT><A NAME="25"></A>
+<FONT ID="LN">26  </FONT><A NAME="26"></A>
+<FONT ID="LN">27  </FONT><A NAME="27"></A>
+<FONT ID="LN">28  </FONT><A NAME="28"></A><FONT ID="FormalComment">/**
+<FONT ID="LN">29  </FONT><A NAME="29"></A> * Added in MobileMedia-Cosmos-OO-v4
+<FONT ID="LN">30  </FONT><A NAME="30"></A> */</FONT>
+<FONT ID="LN">31  </FONT><A NAME="31"></A><FONT ID="SingleLineComment">//#ifdef includeCopyPhoto
+<FONT ID="LN">32  </FONT><A NAME="32"></A></FONT><FONT ID="Class">class</FONT> PhotoViewController <FONT ID="Extends">extends</FONT> <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/photo/impl/AbstractController.java.html">AbstractController</A> {
+<FONT ID="LN">33  </FONT><A NAME="33"></A>
+<FONT ID="LN">34  </FONT><A NAME="34"></A>    <FONT ID="Private">private</FONT> <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/photo/impl/AddPhotoToAlbum.java.html">AddPhotoToAlbum</A> addPhotoToAlbum;
+<FONT ID="LN">35  </FONT><A NAME="35"></A>    
+<FONT ID="LN">36  </FONT><A NAME="36"></A>    <FONT ID="Private">private</FONT> <FONT ID="Void">void</FONT> setAddPhotoToAlbum(<A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/photo/impl/AddPhotoToAlbum.java.html">AddPhotoToAlbum</A> addPhotoToAlbum) {
+<FONT ID="LN">37  </FONT><A NAME="37"></A>        <FONT ID="This">this</FONT>.addPhotoToAlbum = addPhotoToAlbum;
+<FONT ID="LN">38  </FONT><A NAME="38"></A>    }
+<FONT ID="LN">39  </FONT><A NAME="39"></A>
+<FONT ID="LN">40  </FONT><A NAME="40"></A>    String imageName = <FONT ID="StringLiteral">""</FONT>;
+<FONT ID="LN">41  </FONT><A NAME="41"></A>
+<FONT ID="LN">42  </FONT><A NAME="42"></A>    
+<FONT ID="LN">43  </FONT><A NAME="43"></A>    <FONT ID="Public">public</FONT> PhotoViewController(MIDlet midlet,  String imageName) {
+<FONT ID="LN">44  </FONT><A NAME="44"></A>        <FONT ID="Super">super</FONT>( midlet );
+<FONT ID="LN">45  </FONT><A NAME="45"></A>        <FONT ID="This">this</FONT>.imageName = imageName;
+<FONT ID="LN">46  </FONT><A NAME="46"></A>
+<FONT ID="LN">47  </FONT><A NAME="47"></A>    }
+<FONT ID="LN">48  </FONT><A NAME="48"></A>
+<FONT ID="LN">49  </FONT><A NAME="49"></A>    <FONT ID="Private">private</FONT> <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/photo/impl/AddPhotoToAlbum.java.html">AddPhotoToAlbum</A> getAddPhotoToAlbum() {
+<FONT ID="LN">50  </FONT><A NAME="50"></A>        <FONT ID="If">if</FONT>( <FONT ID="This">this</FONT>.addPhotoToAlbum == <FONT ID="Null">null</FONT>)
+<FONT ID="LN">51  </FONT><A NAME="51"></A>            <FONT ID="This">this</FONT>.addPhotoToAlbum = <FONT ID="New">new</FONT> <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/photo/impl/AddPhotoToAlbum.java.html">AddPhotoToAlbum</A>(<FONT ID="StringLiteral">"Copy Photo to Album"</FONT>);
+<FONT ID="LN">52  </FONT><A NAME="52"></A>        <FONT ID="Return">return</FONT> addPhotoToAlbum;
+<FONT ID="LN">53  </FONT><A NAME="53"></A>    }
+<FONT ID="LN">54  </FONT><A NAME="54"></A>
+<FONT ID="LN">55  </FONT><A NAME="55"></A>
+<FONT ID="LN">56  </FONT><A NAME="56"></A>    <FONT ID="MultiLineComment">/* (non-Javadoc)
+<FONT ID="LN">57  </FONT><A NAME="57"></A>     * @see ubc.midp.mobilephoto.core.ui.controller.ControllerInterface#handleCommand(javax.microedition.lcdui.Command, javax.microedition.lcdui.Displayable)
+<FONT ID="LN">58  </FONT><A NAME="58"></A>     */</FONT>
+<FONT ID="LN">59  </FONT><A NAME="59"></A>    <FONT ID="Public">public</FONT> <FONT ID="Boolean">boolean</FONT> handleCommand(Command c) <FONT ID="Throws">throws</FONT> <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/photo/spec/excep/ImageNotFoundException.java.html">ImageNotFoundException</A>, <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/photo/spec/excep/NullAlbumDataReference.java.html">NullAlbumDataReference</A>, <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/photo/spec/excep/InvalidImageDataException.java.html">InvalidImageDataException</A>, <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/photo/spec/excep/PersistenceMechanismException.java.html">PersistenceMechanismException</A>, <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/photo/spec/excep/UnavailablePhotoAlbumException.java.html">UnavailablePhotoAlbumException</A> {
+<FONT ID="LN">60  </FONT><A NAME="60"></A>        String label = c.getLabel();
+<FONT ID="LN">61  </FONT><A NAME="61"></A>        System.out.println( <FONT ID="StringLiteral">"&lt;*"</FONT>+<FONT ID="This">this</FONT>.getClass().getName()+<FONT ID="StringLiteral">".handleCommand() *&gt; "</FONT> + label);
+<FONT ID="LN">62  </FONT><A NAME="62"></A>        
+<FONT ID="LN">63  </FONT><A NAME="63"></A>        <FONT ID="FormalComment">/** Case: Copy photo to a different album */</FONT>
+<FONT ID="LN">64  </FONT><A NAME="64"></A>        <FONT ID="If">if</FONT> (label.equals(<FONT ID="StringLiteral">"Copy"</FONT>)) {
+<FONT ID="LN">65  </FONT><A NAME="65"></A>            <FONT ID="This">this</FONT>.initCopyPhotoToAlbum( );
+<FONT ID="LN">66  </FONT><A NAME="66"></A>            <FONT ID="Return">return</FONT> <FONT ID="True">true</FONT>;
+<FONT ID="LN">67  </FONT><A NAME="67"></A>        }
+<FONT ID="LN">68  </FONT><A NAME="68"></A>
+<FONT ID="LN">69  </FONT><A NAME="69"></A>        <FONT ID="FormalComment">/** Case: Save a copy in a new album */</FONT>
+<FONT ID="LN">70  </FONT><A NAME="70"></A>        <FONT ID="Else">else</FONT> <FONT ID="If">if</FONT> (label.equals(<FONT ID="StringLiteral">"Save Photo"</FONT>)) {
+<FONT ID="LN">71  </FONT><A NAME="71"></A>            <FONT ID="This">this</FONT>.savePhoto();
+<FONT ID="LN">72  </FONT><A NAME="72"></A>            <FONT ID="Return">return</FONT> <FONT ID="True">true</FONT>;
+<FONT ID="LN">73  </FONT><A NAME="73"></A>        }
+<FONT ID="LN">74  </FONT><A NAME="74"></A>
+<FONT ID="LN">75  </FONT><A NAME="75"></A>        <FONT ID="Return">return</FONT> <FONT ID="False">false</FONT>;
+<FONT ID="LN">76  </FONT><A NAME="76"></A>    }
+<FONT ID="LN">77  </FONT><A NAME="77"></A>
+<FONT ID="LN">78  </FONT><A NAME="78"></A>    <FONT ID="SingleLineComment">// #ifdef includeCopyPhoto
+<FONT ID="LN">79  </FONT><A NAME="79"></A></FONT>    <FONT ID="Private">private</FONT> <FONT ID="Void">void</FONT> initCopyPhotoToAlbum() {
+<FONT ID="LN">80  </FONT><A NAME="80"></A>        
+<FONT ID="LN">81  </FONT><A NAME="81"></A>        String title = <FONT ID="New">new</FONT> String(<FONT ID="StringLiteral">"Copy Photo to Album"</FONT>);
+<FONT ID="LN">82  </FONT><A NAME="82"></A>        String labelPhotoPath = <FONT ID="New">new</FONT> String(<FONT ID="StringLiteral">"Copy to Album:"</FONT>);
+<FONT ID="LN">83  </FONT><A NAME="83"></A>        
+<FONT ID="LN">84  </FONT><A NAME="84"></A>        <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/photo/impl/AddPhotoToAlbum.java.html">AddPhotoToAlbum</A> addPhotoToAlbum = <FONT ID="New">new</FONT> <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/photo/impl/AddPhotoToAlbum.java.html">AddPhotoToAlbum</A>( title );
+<FONT ID="LN">85  </FONT><A NAME="85"></A>        addPhotoToAlbum.setPhotoName( imageName );
+<FONT ID="LN">86  </FONT><A NAME="86"></A>        addPhotoToAlbum.setLabelPhotoPath( labelPhotoPath );
+<FONT ID="LN">87  </FONT><A NAME="87"></A>        
+<FONT ID="LN">88  </FONT><A NAME="88"></A>        <FONT ID="SingleLineComment">// #ifdef includeSmsFeature
+<FONT ID="LN">89  </FONT><A NAME="89"></A></FONT>        <FONT ID="MultiLineComment">/* [NC] Added in scenario 06 */</FONT>
+<FONT ID="LN">90  </FONT><A NAME="90"></A>        <FONT ID="If">if</FONT> (((<A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/photo/impl/PhotoViewScreen.java.html">PhotoViewScreen</A>)<FONT ID="This">this</FONT>.getCurrentScreen()).isFromSMS()){
+<FONT ID="LN">91  </FONT><A NAME="91"></A>            addPhotoToAlbum.setImage(((<A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/photo/impl/PhotoViewScreen.java.html">PhotoViewScreen</A>)<FONT ID="This">this</FONT>.getCurrentScreen()).getImage());
+<FONT ID="LN">92  </FONT><A NAME="92"></A>            addPhotoToAlbum.setImageBytes(((<A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/photo/impl/PhotoViewScreen.java.html">PhotoViewScreen</A>)<FONT ID="This">this</FONT>.getCurrentScreen()).getImageBytes());
+<FONT ID="LN">93  </FONT><A NAME="93"></A>        }
+<FONT ID="LN">94  </FONT><A NAME="94"></A>        <FONT ID="SingleLineComment">//#endif
+<FONT ID="LN">95  </FONT><A NAME="95"></A></FONT>        
+<FONT ID="LN">96  </FONT><A NAME="96"></A>        <FONT ID="This">this</FONT>.setAddPhotoToAlbum( addPhotoToAlbum );
+<FONT ID="LN">97  </FONT><A NAME="97"></A>        
+<FONT ID="LN">98  </FONT><A NAME="98"></A>        <FONT ID="SingleLineComment">//Get all required interfaces for this method
+<FONT ID="LN">99  </FONT><A NAME="99"></A></FONT>        MIDlet midlet = <FONT ID="This">this</FONT>.getMidlet();
+<FONT ID="LN">100 </FONT><A NAME="100"></A>        
+<FONT ID="LN">101 </FONT><A NAME="101"></A>        <FONT ID="SingleLineComment">//addPhotoToAlbum.setCommandListener( this );
+<FONT ID="LN">102 </FONT><A NAME="102"></A></FONT>        Display.getDisplay( midlet ).setCurrent( addPhotoToAlbum );
+<FONT ID="LN">103 </FONT><A NAME="103"></A>                
+<FONT ID="LN">104 </FONT><A NAME="104"></A>        addPhotoToAlbum.setCommandListener(<FONT ID="This">this</FONT>);
+<FONT ID="LN">105 </FONT><A NAME="105"></A>    
+<FONT ID="LN">106 </FONT><A NAME="106"></A>    }
+<FONT ID="LN">107 </FONT><A NAME="107"></A>    <FONT ID="SingleLineComment">// #endif
+<FONT ID="LN">108 </FONT><A NAME="108"></A></FONT>    
+<FONT ID="LN">109 </FONT><A NAME="109"></A>    
+<FONT ID="LN">110 </FONT><A NAME="110"></A>    
+<FONT ID="LN">111 </FONT><A NAME="111"></A>    <FONT ID="Private">private</FONT> <FONT ID="Void">void</FONT> savePhoto() <FONT ID="Throws">throws</FONT> <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/photo/spec/excep/ImageNotFoundException.java.html">ImageNotFoundException</A>, <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/photo/spec/excep/NullAlbumDataReference.java.html">NullAlbumDataReference</A>, <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/photo/spec/excep/InvalidImageDataException.java.html">InvalidImageDataException</A>, <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/photo/spec/excep/PersistenceMechanismException.java.html">PersistenceMechanismException</A>, <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/photo/spec/excep/UnavailablePhotoAlbumException.java.html">UnavailablePhotoAlbumException</A>{
+<FONT ID="LN">112 </FONT><A NAME="112"></A>        <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/photo/spec/prov/IManager.java.html">IManager</A> manager = ComponentFactory.createInstance();
+<FONT ID="LN">113 </FONT><A NAME="113"></A>        <A HREF="../../../../../../../main/IImageData.java.html">IImageData</A> imageData = <FONT ID="Null">null</FONT>;
+<FONT ID="LN">114 </FONT><A NAME="114"></A>        <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/photo/spec/req/IFilesystem.java.html">IFilesystem</A> filesystem = (<A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/photo/spec/req/IFilesystem.java.html">IFilesystem</A>) manager.getRequiredInterface(<FONT ID="StringLiteral">"IFilesystem"</FONT>);
+<FONT ID="LN">115 </FONT><A NAME="115"></A>
+<FONT ID="LN">116 </FONT><A NAME="116"></A>
+<FONT ID="LN">117 </FONT><A NAME="117"></A>        <FONT ID="SingleLineComment">// #ifdef includeSmsFeature
+<FONT ID="LN">118 </FONT><A NAME="118"></A></FONT>        <FONT ID="MultiLineComment">/* [NC] Added in scenario 06 */</FONT>
+<FONT ID="LN">119 </FONT><A NAME="119"></A>        Image img = ((<A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/photo/impl/AddPhotoToAlbum.java.html">AddPhotoToAlbum</A>)<FONT ID="This">this</FONT>.getCurrentScreen()).getImage();
+<FONT ID="LN">120 </FONT><A NAME="120"></A>        
+<FONT ID="LN">121 </FONT><A NAME="121"></A>        <FONT ID="If">if</FONT> (img == <FONT ID="Null">null</FONT>)
+<FONT ID="LN">122 </FONT><A NAME="122"></A>        <FONT ID="SingleLineComment">//#endif
+<FONT ID="LN">123 </FONT><A NAME="123"></A></FONT>        {
+<FONT ID="LN">124 </FONT><A NAME="124"></A>        imageData = filesystem.getImageInfo(imageName);
+<FONT ID="LN">125 </FONT><A NAME="125"></A>        }
+<FONT ID="LN">126 </FONT><A NAME="126"></A>        
+<FONT ID="LN">127 </FONT><A NAME="127"></A>        
+<FONT ID="LN">128 </FONT><A NAME="128"></A>        <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/photo/impl/AddPhotoToAlbum.java.html">AddPhotoToAlbum</A> addPhotoToAlbum = <FONT ID="This">this</FONT>.getAddPhotoToAlbum();
+<FONT ID="LN">129 </FONT><A NAME="129"></A>        
+<FONT ID="LN">130 </FONT><A NAME="130"></A>        
+<FONT ID="LN">131 </FONT><A NAME="131"></A>        String photoName = addPhotoToAlbum.getPhotoName(); 
+<FONT ID="LN">132 </FONT><A NAME="132"></A>        System.out.println(<FONT ID="StringLiteral">"[PhotoViewController.savePhoto] photoName = "</FONT>+photoName);
+<FONT ID="LN">133 </FONT><A NAME="133"></A>        
+<FONT ID="LN">134 </FONT><A NAME="134"></A>        String albumName = addPhotoToAlbum.getPath();
+<FONT ID="LN">135 </FONT><A NAME="135"></A>        System.out.println(<FONT ID="StringLiteral">"[PhotoViewController.savePhoto] albumName = "</FONT>+albumName);
+<FONT ID="LN">136 </FONT><A NAME="136"></A>        
+<FONT ID="LN">137 </FONT><A NAME="137"></A>        <FONT ID="SingleLineComment">// #ifdef includeSmsFeature
+<FONT ID="LN">138 </FONT><A NAME="138"></A></FONT>        <FONT ID="MultiLineComment">/* [NC] Added in scenario 06 */</FONT>
+<FONT ID="LN">139 </FONT><A NAME="139"></A>        <FONT ID="If">if</FONT> (img != <FONT ID="Null">null</FONT>){
+<FONT ID="LN">140 </FONT><A NAME="140"></A>            Image image = Image.createImage( img.getWidth() , img.getHeight() );
+<FONT ID="LN">141 </FONT><A NAME="141"></A>            filesystem.addImageData(photoName, addPhotoToAlbum.getImageBytes(), albumName);
+<FONT ID="LN">142 </FONT><A NAME="142"></A>        }
+<FONT ID="LN">143 </FONT><A NAME="143"></A>        <FONT ID="SingleLineComment">// #endif 
+<FONT ID="LN">144 </FONT><A NAME="144"></A></FONT>        
+<FONT ID="LN">145 </FONT><A NAME="145"></A>        <FONT ID="SingleLineComment">// #if includeCopyPhoto &amp;&amp; includeSmsFeature
+<FONT ID="LN">146 </FONT><A NAME="146"></A></FONT>        <FONT ID="MultiLineComment">/* [NC] Added in scenario 06 */</FONT>
+<FONT ID="LN">147 </FONT><A NAME="147"></A>        <FONT ID="If">if</FONT> (img == <FONT ID="Null">null</FONT>)
+<FONT ID="LN">148 </FONT><A NAME="148"></A>        <FONT ID="SingleLineComment">//#endif
+<FONT ID="LN">149 </FONT><A NAME="149"></A></FONT>            
+<FONT ID="LN">150 </FONT><A NAME="150"></A>        <FONT ID="SingleLineComment">// #if includeCopyPhoto 
+<FONT ID="LN">151 </FONT><A NAME="151"></A></FONT>        <FONT ID="MultiLineComment">/* [NC] Added in scenario 06 */</FONT>
+<FONT ID="LN">152 </FONT><A NAME="152"></A>        filesystem.addImageData(photoName, imageData, albumName);
+<FONT ID="LN">153 </FONT><A NAME="153"></A>        <FONT ID="SingleLineComment">// #endif
+<FONT ID="LN">154 </FONT><A NAME="154"></A></FONT>        
+<FONT ID="LN">155 </FONT><A NAME="155"></A>        
+<FONT ID="LN">156 </FONT><A NAME="156"></A>        
+<FONT ID="LN">157 </FONT><A NAME="157"></A>        
+<FONT ID="LN">158 </FONT><A NAME="158"></A>        ((<A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/photo/impl/PhotoController.java.html">PhotoController</A>)<FONT ID="This">this</FONT>.getNextController()).showImageList(ScreenSingleton.getInstance().getCurrentStoreName(), <FONT ID="False">false</FONT>, <FONT ID="False">false</FONT>);
+<FONT ID="LN">159 </FONT><A NAME="159"></A>        
+<FONT ID="LN">160 </FONT><A NAME="160"></A>        ScreenSingleton.getInstance().setCurrentScreenName(Constants.IMAGELIST_SCREEN);
+<FONT ID="LN">161 </FONT><A NAME="161"></A>    
+<FONT ID="LN">162 </FONT><A NAME="162"></A>    }
+<FONT ID="LN">163 </FONT><A NAME="163"></A>}
+<FONT ID="LN">164 </FONT><A NAME="164"></A><FONT ID="SingleLineComment">//#endif</FONT></pre>
+</BODY>
+</HTML>

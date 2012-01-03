@@ -1,0 +1,64 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<HTML>
+<HEAD>
+<LINK REL=STYLESHEET TYPE="text/css" HREF="../../../../../../../stylesheet.css" TITLE="Style">
+<META NAME="GENERATOR" CONTENT="Java2HTML Version 1.5">
+<TITLE>br.unicamp.ic.sed.mobilemedia.sms.impl.BaseMessaging (Java2HTML)</TITLE>
+</HEAD>
+<BODY><TABLE id="Header" border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td colspan="2" width="33%">&nbsp;</td>
+<td align="center" colspan="2" width="33%">
+<font size="4">BaseMessaging.java</font>
+</td>
+<td align="right" colspan="2" width="33%">&nbsp;</td>
+</tr>
+</TABLE>
+<pre ID="Classes">
+<FONT ID="LN">1   </FONT><A NAME="1"></A><FONT ID="MultiLineComment">/*
+<FONT ID="LN">2   </FONT><A NAME="2"></A> * Created on 31-Mar-2005
+<FONT ID="LN">3   </FONT><A NAME="3"></A> *
+<FONT ID="LN">4   </FONT><A NAME="4"></A> */</FONT>
+<FONT ID="LN">5   </FONT><A NAME="5"></A>
+<FONT ID="LN">6   </FONT><A NAME="6"></A><FONT ID="SingleLineComment">//#ifdef includeSmsFeature 
+<FONT ID="LN">7   </FONT><A NAME="7"></A></FONT><FONT ID="Package">package</FONT> br.unicamp.ic.sed.mobilemedia.sms.impl;
+<FONT ID="LN">8   </FONT><A NAME="8"></A>
+<FONT ID="LN">9   </FONT><A NAME="9"></A><FONT ID="Import">import</FONT> java.io.IOException;
+<FONT ID="LN">10  </FONT><A NAME="10"></A><FONT ID="Import">import</FONT> java.io.InterruptedIOException;
+<FONT ID="LN">11  </FONT><A NAME="11"></A>
+<FONT ID="LN">12  </FONT><A NAME="12"></A><FONT ID="Import">import</FONT> javax.wireless.messaging.MessageConnection;
+<FONT ID="LN">13  </FONT><A NAME="13"></A>
+<FONT ID="LN">14  </FONT><A NAME="14"></A><FONT ID="FormalComment">/**
+<FONT ID="LN">15  </FONT><A NAME="15"></A> * @author tyoung
+<FONT ID="LN">16  </FONT><A NAME="16"></A> * This is the abstract base messaging class. (At the moment, no messaging classes are implemented)
+<FONT ID="LN">17  </FONT><A NAME="17"></A> * It is used for communication between the device and a network. Generally to upload or 
+<FONT ID="LN">18  </FONT><A NAME="18"></A> * download data such as photos to the application. Currently, the prototype just loads data
+<FONT ID="LN">19  </FONT><A NAME="19"></A> * from the jar file directly.
+<FONT ID="LN">20  </FONT><A NAME="20"></A> * Specific messaging classes that use different protocols should implement this class 
+<FONT ID="LN">21  </FONT><A NAME="21"></A> * (ie. SMS messaging, HTTP messaging, Infrared, Bluetooth etc.)
+<FONT ID="LN">22  </FONT><A NAME="22"></A> */</FONT>
+<FONT ID="LN">23  </FONT><A NAME="23"></A><FONT ID="Public">public</FONT> <FONT ID="Abstract">abstract</FONT> <FONT ID="Class">class</FONT> BaseMessaging {
+<FONT ID="LN">24  </FONT><A NAME="24"></A>
+<FONT ID="LN">25  </FONT><A NAME="25"></A>    <FONT ID="Public">public</FONT> <FONT ID="Abstract">abstract</FONT> <FONT ID="Boolean">boolean</FONT> sendImage(<FONT ID="Byte">byte</FONT>[] imageData);
+<FONT ID="LN">26  </FONT><A NAME="26"></A>    <FONT ID="Public">public</FONT> <FONT ID="Abstract">abstract</FONT> <FONT ID="Byte">byte</FONT>[] receiveImage() <FONT ID="Throws">throws</FONT> InterruptedIOException, IOException;
+<FONT ID="LN">27  </FONT><A NAME="27"></A>    <FONT ID="Public">public</FONT> <FONT ID="Abstract">abstract</FONT> <FONT ID="Void">void</FONT> cleanUpConnections(MessageConnection conn);
+<FONT ID="LN">28  </FONT><A NAME="28"></A>    
+<FONT ID="LN">29  </FONT><A NAME="29"></A>
+<FONT ID="LN">30  </FONT><A NAME="30"></A>    <FONT ID="FormalComment">/**
+<FONT ID="LN">31  </FONT><A NAME="31"></A>     * @return Returns the listenPort.
+<FONT ID="LN">32  </FONT><A NAME="32"></A>     */</FONT>
+<FONT ID="LN">33  </FONT><A NAME="33"></A><FONT ID="MultiLineComment">/*  public String getListenPort() {
+<FONT ID="LN">34  </FONT><A NAME="34"></A>        return listenPort;
+<FONT ID="LN">35  </FONT><A NAME="35"></A>    }
+<FONT ID="LN">36  </FONT><A NAME="36"></A>    
+<FONT ID="LN">37  </FONT><A NAME="37"></A>    /**
+<FONT ID="LN">38  </FONT><A NAME="38"></A>     * @param listenPort The listenPort to set.
+<FONT ID="LN">39  </FONT><A NAME="39"></A>     *
+<FONT ID="LN">40  </FONT><A NAME="40"></A>    public void setListenPort(String listenPort) {
+<FONT ID="LN">41  </FONT><A NAME="41"></A>        this.listenPort = listenPort;
+<FONT ID="LN">42  </FONT><A NAME="42"></A>    }
+<FONT ID="LN">43  </FONT><A NAME="43"></A>*/</FONT>
+<FONT ID="LN">44  </FONT><A NAME="44"></A>}
+<FONT ID="LN">45  </FONT><A NAME="45"></A><FONT ID="SingleLineComment">//#endif</FONT></pre>
+</BODY>
+</HTML>

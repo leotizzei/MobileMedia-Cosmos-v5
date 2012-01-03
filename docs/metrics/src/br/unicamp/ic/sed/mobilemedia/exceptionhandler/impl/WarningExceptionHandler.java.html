@@ -1,0 +1,54 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<HTML>
+<HEAD>
+<LINK REL=STYLESHEET TYPE="text/css" HREF="../../../../../../../stylesheet.css" TITLE="Style">
+<META NAME="GENERATOR" CONTENT="Java2HTML Version 1.5">
+<TITLE>br.unicamp.ic.sed.mobilemedia.exceptionhandler.impl.WarningExceptionHandler (Java2HTML)</TITLE>
+</HEAD>
+<BODY><TABLE id="Header" border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td colspan="2" width="33%">&nbsp;</td>
+<td align="center" colspan="2" width="33%">
+<font size="4">WarningExceptionHandler.java</font>
+</td>
+<td align="right" colspan="2" width="33%">&nbsp;</td>
+</tr>
+</TABLE>
+<pre ID="Classes">
+<FONT ID="LN">1   </FONT><A NAME="1"></A><FONT ID="Package">package</FONT> br.unicamp.ic.sed.mobilemedia.exceptionhandler.impl;
+<FONT ID="LN">2   </FONT><A NAME="2"></A>
+<FONT ID="LN">3   </FONT><A NAME="3"></A><FONT ID="Import">import</FONT> javax.microedition.lcdui.Alert;
+<FONT ID="LN">4   </FONT><A NAME="4"></A><FONT ID="Import">import</FONT> javax.microedition.lcdui.AlertType;
+<FONT ID="LN">5   </FONT><A NAME="5"></A><FONT ID="Import">import</FONT> javax.microedition.lcdui.Display;
+<FONT ID="LN">6   </FONT><A NAME="6"></A><FONT ID="Import">import</FONT> javax.microedition.lcdui.Displayable;
+<FONT ID="LN">7   </FONT><A NAME="7"></A><FONT ID="Import">import</FONT> javax.microedition.midlet.MIDlet;
+<FONT ID="LN">8   </FONT><A NAME="8"></A>
+<FONT ID="LN">9   </FONT><A NAME="9"></A><FONT ID="Import">import</FONT> <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/exceptionhandler/spec/prov/IManager.java.html">br.unicamp.ic.sed.mobilemedia.exceptionhandler.spec.prov.IManager</A>;
+<FONT ID="LN">10  </FONT><A NAME="10"></A><FONT ID="Import">import</FONT> <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/exceptionhandler/spec/req/IMobileResources.java.html">br.unicamp.ic.sed.mobilemedia.exceptionhandler.spec.req.IMobileResources</A>;
+<FONT ID="LN">11  </FONT><A NAME="11"></A>
+<FONT ID="LN">12  </FONT><A NAME="12"></A>
+<FONT ID="LN">13  </FONT><A NAME="13"></A>
+<FONT ID="LN">14  </FONT><A NAME="14"></A>
+<FONT ID="LN">15  </FONT><A NAME="15"></A><FONT ID="Class">class</FONT> WarningExceptionHandler{
+<FONT ID="LN">16  </FONT><A NAME="16"></A>
+<FONT ID="LN">17  </FONT><A NAME="17"></A>    <FONT ID="Protected">protected</FONT> <FONT ID="Void">void</FONT> handle(Exception exception) {
+<FONT ID="LN">18  </FONT><A NAME="18"></A>        
+<FONT ID="LN">19  </FONT><A NAME="19"></A>        System.out.println( <FONT ID="StringLiteral">"[WarningExceptionHandler] Handling: "</FONT> + exception.getMessage() );
+<FONT ID="LN">20  </FONT><A NAME="20"></A>        
+<FONT ID="LN">21  </FONT><A NAME="21"></A>        
+<FONT ID="LN">22  </FONT><A NAME="22"></A>        <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/exceptionhandler/spec/prov/IManager.java.html">IManager</A> manager = ComponentFactory.createInstance();
+<FONT ID="LN">23  </FONT><A NAME="23"></A>        <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/exceptionhandler/spec/req/IMobileResources.java.html">IMobileResources</A> mobile = (<A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/exceptionhandler/spec/req/IMobileResources.java.html">IMobileResources</A>)manager.getRequiredInterface( <FONT ID="StringLiteral">"IMobileResources"</FONT> );
+<FONT ID="LN">24  </FONT><A NAME="24"></A>        
+<FONT ID="LN">25  </FONT><A NAME="25"></A>        MIDlet midlet = mobile.getMainMIDlet();
+<FONT ID="LN">26  </FONT><A NAME="26"></A>        
+<FONT ID="LN">27  </FONT><A NAME="27"></A>        exception.printStackTrace();
+<FONT ID="LN">28  </FONT><A NAME="28"></A>        Alert alert = <FONT ID="New">new</FONT> Alert( <FONT ID="StringLiteral">"Error"</FONT> , exception.getMessage() , <FONT ID="Null">null</FONT>, AlertType.ERROR );
+<FONT ID="LN">29  </FONT><A NAME="29"></A>        alert.setTimeout( <FONT ID="IntegerLiteral">5000</FONT> );
+<FONT ID="LN">30  </FONT><A NAME="30"></A>        
+<FONT ID="LN">31  </FONT><A NAME="31"></A>        Displayable currentDisplay = Display.getDisplay( midlet ).getCurrent();
+<FONT ID="LN">32  </FONT><A NAME="32"></A>        Display.getDisplay( midlet ).setCurrent(alert , currentDisplay );
+<FONT ID="LN">33  </FONT><A NAME="33"></A>    }
+<FONT ID="LN">34  </FONT><A NAME="34"></A>}
+<FONT ID="LN">35  </FONT><A NAME="35"></A></pre>
+</BODY>
+</HTML>

@@ -1,0 +1,63 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<HTML>
+<HEAD>
+<LINK REL=STYLESHEET TYPE="text/css" HREF="../../../../../../../../stylesheet.css" TITLE="Style">
+<META NAME="GENERATOR" CONTENT="Java2HTML Version 1.5">
+<TITLE>br.unicamp.ic.sed.mobilemedia.mobilephonemgr.spec.req.IFilesystem (Java2HTML)</TITLE>
+</HEAD>
+<BODY><TABLE id="Header" border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td colspan="2" width="33%">&nbsp;</td>
+<td align="center" colspan="2" width="33%">
+<font size="4">IFilesystem.java</font>
+</td>
+<td align="right" colspan="2" width="33%">&nbsp;</td>
+</tr>
+</TABLE>
+<pre ID="Classes">
+<FONT ID="LN">1   </FONT><A NAME="1"></A><FONT ID="Package">package</FONT> br.unicamp.ic.sed.mobilemedia.mobilephonemgr.spec.req;
+<FONT ID="LN">2   </FONT><A NAME="2"></A>
+<FONT ID="LN">3   </FONT><A NAME="3"></A><FONT ID="Import">import</FONT> javax.microedition.lcdui.Image;
+<FONT ID="LN">4   </FONT><A NAME="4"></A>
+<FONT ID="LN">5   </FONT><A NAME="5"></A><FONT ID="Import">import</FONT> <A HREF="../../../../../../../../main/IImageData.java.html">main.IImageData</A>;
+<FONT ID="LN">6   </FONT><A NAME="6"></A>
+<FONT ID="LN">7   </FONT><A NAME="7"></A>
+<FONT ID="LN">8   </FONT><A NAME="8"></A><FONT ID="Import">import</FONT> <A HREF="../../../../../../../../br/unicamp/ic/sed/mobilemedia/mobilephonemgr/spec/excep/ImageNotFoundException.java.html">br.unicamp.ic.sed.mobilemedia.mobilephonemgr.spec.excep.ImageNotFoundException</A>;
+<FONT ID="LN">9   </FONT><A NAME="9"></A><FONT ID="Import">import</FONT> <A HREF="../../../../../../../../br/unicamp/ic/sed/mobilemedia/mobilephonemgr/spec/excep/InvalidImageDataException.java.html">br.unicamp.ic.sed.mobilemedia.mobilephonemgr.spec.excep.InvalidImageDataException</A>;
+<FONT ID="LN">10  </FONT><A NAME="10"></A><FONT ID="Import">import</FONT> <A HREF="../../../../../../../../br/unicamp/ic/sed/mobilemedia/mobilephonemgr/spec/excep/InvalidPhotoAlbumNameException.java.html">br.unicamp.ic.sed.mobilemedia.mobilephonemgr.spec.excep.InvalidPhotoAlbumNameException</A>;
+<FONT ID="LN">11  </FONT><A NAME="11"></A><FONT ID="Import">import</FONT> <A HREF="../../../../../../../../br/unicamp/ic/sed/mobilemedia/mobilephonemgr/spec/excep/NullAlbumDataReference.java.html">br.unicamp.ic.sed.mobilemedia.mobilephonemgr.spec.excep.NullAlbumDataReference</A>;
+<FONT ID="LN">12  </FONT><A NAME="12"></A><FONT ID="Import">import</FONT> <A HREF="../../../../../../../../br/unicamp/ic/sed/mobilemedia/mobilephonemgr/spec/excep/PersistenceMechanismException.java.html">br.unicamp.ic.sed.mobilemedia.mobilephonemgr.spec.excep.PersistenceMechanismException</A>;
+<FONT ID="LN">13  </FONT><A NAME="13"></A><FONT ID="Import">import</FONT> <A HREF="../../../../../../../../br/unicamp/ic/sed/mobilemedia/mobilephonemgr/spec/excep/UnavailablePhotoAlbumException.java.html">br.unicamp.ic.sed.mobilemedia.mobilephonemgr.spec.excep.UnavailablePhotoAlbumException</A>;
+<FONT ID="LN">14  </FONT><A NAME="14"></A>
+<FONT ID="LN">15  </FONT><A NAME="15"></A><FONT ID="Public">public</FONT> <FONT ID="Interface">interface</FONT> IFilesystem{
+<FONT ID="LN">16  </FONT><A NAME="16"></A>
+<FONT ID="LN">17  </FONT><A NAME="17"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> addNewPhotoToAlbum ( String imageName, String imagePath, String albumName ) <FONT ID="Throws">throws</FONT> <A HREF="../../../../../../../../br/unicamp/ic/sed/mobilemedia/mobilephonemgr/spec/excep/InvalidImageDataException.java.html">InvalidImageDataException</A>, <A HREF="../../../../../../../../br/unicamp/ic/sed/mobilemedia/mobilephonemgr/spec/excep/PersistenceMechanismException.java.html">PersistenceMechanismException</A>; 
+<FONT ID="LN">18  </FONT><A NAME="18"></A>    
+<FONT ID="LN">19  </FONT><A NAME="19"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> deleteImage ( String imageName, String albumName ) <FONT ID="Throws">throws</FONT> <A HREF="../../../../../../../../br/unicamp/ic/sed/mobilemedia/mobilephonemgr/spec/excep/PersistenceMechanismException.java.html">PersistenceMechanismException</A>, <A HREF="../../../../../../../../br/unicamp/ic/sed/mobilemedia/mobilephonemgr/spec/excep/ImageNotFoundException.java.html">ImageNotFoundException</A>; 
+<FONT ID="LN">20  </FONT><A NAME="20"></A>    
+<FONT ID="LN">21  </FONT><A NAME="21"></A>    <FONT ID="Public">public</FONT> Image getImageFromRecordStore ( String albumName, String imageName ) <FONT ID="Throws">throws</FONT> <A HREF="../../../../../../../../br/unicamp/ic/sed/mobilemedia/mobilephonemgr/spec/excep/ImageNotFoundException.java.html">ImageNotFoundException</A>, <A HREF="../../../../../../../../br/unicamp/ic/sed/mobilemedia/mobilephonemgr/spec/excep/PersistenceMechanismException.java.html">PersistenceMechanismException</A>; 
+<FONT ID="LN">22  </FONT><A NAME="22"></A>    
+<FONT ID="LN">23  </FONT><A NAME="23"></A>    <FONT ID="Public">public</FONT> String[] getAlbumNames (  ); 
+<FONT ID="LN">24  </FONT><A NAME="24"></A>    
+<FONT ID="LN">25  </FONT><A NAME="25"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> resetImageData (  ) <FONT ID="Throws">throws</FONT> <A HREF="../../../../../../../../br/unicamp/ic/sed/mobilemedia/mobilephonemgr/spec/excep/PersistenceMechanismException.java.html">PersistenceMechanismException</A>; 
+<FONT ID="LN">26  </FONT><A NAME="26"></A>    
+<FONT ID="LN">27  </FONT><A NAME="27"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> createNewPhotoAlbum ( String albumName ) <FONT ID="Throws">throws</FONT> <A HREF="../../../../../../../../br/unicamp/ic/sed/mobilemedia/mobilephonemgr/spec/excep/PersistenceMechanismException.java.html">PersistenceMechanismException</A>, <A HREF="../../../../../../../../br/unicamp/ic/sed/mobilemedia/mobilephonemgr/spec/excep/InvalidPhotoAlbumNameException.java.html">InvalidPhotoAlbumNameException</A>; 
+<FONT ID="LN">28  </FONT><A NAME="28"></A>    
+<FONT ID="LN">29  </FONT><A NAME="29"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> deletePhotoAlbum ( String albumName ) <FONT ID="Throws">throws</FONT> <A HREF="../../../../../../../../br/unicamp/ic/sed/mobilemedia/mobilephonemgr/spec/excep/PersistenceMechanismException.java.html">PersistenceMechanismException</A>; 
+<FONT ID="LN">30  </FONT><A NAME="30"></A>
+<FONT ID="LN">31  </FONT><A NAME="31"></A>    <FONT ID="Public">public</FONT> <A HREF="../../../../../../../../main/IImageData.java.html">IImageData</A> getImageInfo( String imageName ) <FONT ID="Throws">throws</FONT> <A HREF="../../../../../../../../br/unicamp/ic/sed/mobilemedia/mobilephonemgr/spec/excep/ImageNotFoundException.java.html">ImageNotFoundException</A>, <A HREF="../../../../../../../../br/unicamp/ic/sed/mobilemedia/mobilephonemgr/spec/excep/NullAlbumDataReference.java.html">NullAlbumDataReference</A>;
+<FONT ID="LN">32  </FONT><A NAME="32"></A>
+<FONT ID="LN">33  </FONT><A NAME="33"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> updateImageInfo( <A HREF="../../../../../../../../main/IImageData.java.html">IImageData</A> velhoID , <A HREF="../../../../../../../../main/IImageData.java.html">IImageData</A> novoID ) <FONT ID="Throws">throws</FONT> <A HREF="../../../../../../../../br/unicamp/ic/sed/mobilemedia/mobilephonemgr/spec/excep/InvalidImageDataException.java.html">InvalidImageDataException</A>, <A HREF="../../../../../../../../br/unicamp/ic/sed/mobilemedia/mobilephonemgr/spec/excep/PersistenceMechanismException.java.html">PersistenceMechanismException</A>;
+<FONT ID="LN">34  </FONT><A NAME="34"></A>         
+<FONT ID="LN">35  </FONT><A NAME="35"></A>    <FONT ID="Public">public</FONT> <A HREF="../../../../../../../../main/IImageData.java.html">IImageData</A>[] getImages( String albumName )<FONT ID="Throws">throws</FONT> <A HREF="../../../../../../../../br/unicamp/ic/sed/mobilemedia/mobilephonemgr/spec/excep/UnavailablePhotoAlbumException.java.html">UnavailablePhotoAlbumException</A>;
+<FONT ID="LN">36  </FONT><A NAME="36"></A>    
+<FONT ID="LN">37  </FONT><A NAME="37"></A>    <FONT ID="SingleLineComment">// #ifdef includeCopyPhoto
+<FONT ID="LN">38  </FONT><A NAME="38"></A></FONT>    <FONT ID="MultiLineComment">/*
+<FONT ID="LN">39  </FONT><A NAME="39"></A>     * Added in MobileMedia-Cosmos-OO-v4 
+<FONT ID="LN">40  </FONT><A NAME="40"></A>     * 
+<FONT ID="LN">41  </FONT><A NAME="41"></A>     */</FONT>
+<FONT ID="LN">42  </FONT><A NAME="42"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> addImageData(String photoName, <A HREF="../../../../../../../../main/IImageData.java.html">IImageData</A> imageData, String albumName) <FONT ID="Throws">throws</FONT> <A HREF="../../../../../../../../br/unicamp/ic/sed/mobilemedia/mobilephonemgr/spec/excep/InvalidImageDataException.java.html">InvalidImageDataException</A>, <A HREF="../../../../../../../../br/unicamp/ic/sed/mobilemedia/mobilephonemgr/spec/excep/PersistenceMechanismException.java.html">PersistenceMechanismException</A>;
+<FONT ID="LN">43  </FONT><A NAME="43"></A>    <FONT ID="SingleLineComment">// #endif
+<FONT ID="LN">44  </FONT><A NAME="44"></A></FONT>}</pre>
+</BODY>
+</HTML>

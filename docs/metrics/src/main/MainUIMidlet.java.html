@@ -1,0 +1,268 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<HTML>
+<HEAD>
+<LINK REL=STYLESHEET TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+<META NAME="GENERATOR" CONTENT="Java2HTML Version 1.5">
+<TITLE>main.MainUIMidlet (Java2HTML)</TITLE>
+</HEAD>
+<BODY><TABLE id="Header" border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td colspan="2" width="33%">&nbsp;</td>
+<td align="center" colspan="2" width="33%">
+<font size="4">MainUIMidlet.java</font>
+</td>
+<td align="right" colspan="2" width="33%">&nbsp;</td>
+</tr>
+</TABLE>
+<pre ID="Classes">
+<FONT ID="LN">1   </FONT><A NAME="1"></A><FONT ID="Package">package</FONT> main;
+<FONT ID="LN">2   </FONT><A NAME="2"></A>
+<FONT ID="LN">3   </FONT><A NAME="3"></A><FONT ID="Import">import</FONT> javax.microedition.midlet.MIDlet;
+<FONT ID="LN">4   </FONT><A NAME="4"></A><FONT ID="Import">import</FONT> javax.microedition.midlet.MIDletStateChangeException;
+<FONT ID="LN">5   </FONT><A NAME="5"></A>
+<FONT ID="LN">6   </FONT><A NAME="6"></A><FONT ID="Import">import</FONT> <A HREF="../br/unicamp/ic/sed/mobilemedia/mobilephonemgr/spec/prov/IMobilePhone.java.html">br.unicamp.ic.sed.mobilemedia.mobilephonemgr.spec.prov.IMobilePhone</A>;
+<FONT ID="LN">7   </FONT><A NAME="7"></A><FONT ID="Import">import</FONT> <A HREF="../br/unicamp/ic/sed/mobilemedia/mobilephonemgr/spec/req/IAlbum.java.html">br.unicamp.ic.sed.mobilemedia.mobilephonemgr.spec.req.IAlbum</A>;
+<FONT ID="LN">8   </FONT><A NAME="8"></A>
+<FONT ID="LN">9   </FONT><A NAME="9"></A>
+<FONT ID="LN">10  </FONT><A NAME="10"></A><FONT ID="SingleLineComment">//Following are pre-processor statements to include the required
+<FONT ID="LN">11  </FONT><A NAME="11"></A></FONT><FONT ID="SingleLineComment">//classes for device specific features. They must be commented out
+<FONT ID="LN">12  </FONT><A NAME="12"></A></FONT><FONT ID="SingleLineComment">//if they aren't used, otherwise it will throw exceptions trying to
+<FONT ID="LN">13  </FONT><A NAME="13"></A></FONT><FONT ID="SingleLineComment">//load classes that aren't available for a given platform.
+<FONT ID="LN">14  </FONT><A NAME="14"></A></FONT>
+<FONT ID="LN">15  </FONT><A NAME="15"></A>
+<FONT ID="LN">16  </FONT><A NAME="16"></A><FONT ID="MultiLineComment">/* 
+<FONT ID="LN">17  </FONT><A NAME="17"></A> * 
+<FONT ID="LN">18  </FONT><A NAME="18"></A> *
+<FONT ID="LN">19  </FONT><A NAME="19"></A> * This is the main Midlet class for the core J2ME application
+<FONT ID="LN">20  </FONT><A NAME="20"></A> * It contains all the basic functionality that should be executable
+<FONT ID="LN">21  </FONT><A NAME="21"></A> * in any standard J2ME device that supports MIDP 1.0 or higher. 
+<FONT ID="LN">22  </FONT><A NAME="22"></A> * Any additional J2ME features for this application that are dependent
+<FONT ID="LN">23  </FONT><A NAME="23"></A> * upon a particular device (ie. optional or proprietary library) are
+<FONT ID="LN">24  </FONT><A NAME="24"></A> * de-coupled from the core application so they can be conditionally included
+<FONT ID="LN">25  </FONT><A NAME="25"></A> * depending on the target platform 
+<FONT ID="LN">26  </FONT><A NAME="26"></A> * 
+<FONT ID="LN">27  </FONT><A NAME="27"></A> * This Application provides a basic Photo Album interface that allows a user to view
+<FONT ID="LN">28  </FONT><A NAME="28"></A> * images on their mobile device. 
+<FONT ID="LN">29  </FONT><A NAME="29"></A> * */</FONT>
+<FONT ID="LN">30  </FONT><A NAME="30"></A><FONT ID="Public">public</FONT> <FONT ID="Class">class</FONT> MainUIMidlet <FONT ID="Extends">extends</FONT> MIDlet <FONT ID="Implements">implements</FONT> <A HREF="../main/IMobileResources.java.html">IMobileResources</A> {
+<FONT ID="LN">31  </FONT><A NAME="31"></A>
+<FONT ID="LN">32  </FONT><A NAME="32"></A>    <FONT ID="SingleLineComment">//components
+<FONT ID="LN">33  </FONT><A NAME="33"></A></FONT>    <A HREF="../br/unicamp/ic/sed/mobilemedia/album/spec/prov/IManager.java.html">br.unicamp.ic.sed.mobilemedia.album.spec.prov.IManager</A> album;
+<FONT ID="LN">34  </FONT><A NAME="34"></A>    <A HREF="../br/unicamp/ic/sed/mobilemedia/filesystemmgr/spec/prov/IManager.java.html">br.unicamp.ic.sed.mobilemedia.filesystemmgr.spec.prov.IManager</A> filesystem;
+<FONT ID="LN">35  </FONT><A NAME="35"></A>    <A HREF="../br/unicamp/ic/sed/mobilemedia/photo/spec/prov/IManager.java.html">br.unicamp.ic.sed.mobilemedia.photo.spec.prov.IManager</A> photo;
+<FONT ID="LN">36  </FONT><A NAME="36"></A>    <A HREF="../br/unicamp/ic/sed/mobilemedia/mobilephonemgr/spec/prov/IManager.java.html">br.unicamp.ic.sed.mobilemedia.mobilephonemgr.spec.prov.IManager</A> mobilePhone;
+<FONT ID="LN">37  </FONT><A NAME="37"></A>    <A HREF="../br/unicamp/ic/sed/mobilemedia/exceptionhandler/spec/prov/IManager.java.html">br.unicamp.ic.sed.mobilemedia.exceptionhandler.spec.prov.IManager</A> exceptionHandler;
+<FONT ID="LN">38  </FONT><A NAME="38"></A>
+<FONT ID="LN">39  </FONT><A NAME="39"></A>    <FONT ID="SingleLineComment">//connectors
+<FONT ID="LN">40  </FONT><A NAME="40"></A></FONT>    <A HREF="../br/unicamp/ic/sed/mobilemedia/album_mobilephonemgr/impl/IManager.java.html">br.unicamp.ic.sed.mobilemedia.album_mobilephonemgr.impl.IManager</A> album_mobilePhone;
+<FONT ID="LN">41  </FONT><A NAME="41"></A>    <A HREF="../br/unicamp/ic/sed/mobilemedia/filesystemmgr_mobilephonemgr/impl/IManager.java.html">br.unicamp.ic.sed.mobilemedia.filesystemmgr_mobilephonemgr.impl.IManager</A> filesystem_mobilePhone;
+<FONT ID="LN">42  </FONT><A NAME="42"></A>    <A HREF="../br/unicamp/ic/sed/mobilemedia/photo_mobilephonemgr/impl/IManager.java.html">br.unicamp.ic.sed.mobilemedia.photo_mobilephonemgr.impl.IManager</A> photo_mobilePhone;
+<FONT ID="LN">43  </FONT><A NAME="43"></A>    <A HREF="../br/unicamp/ic/sed/mobilemedia/mainuimidlet_album/impl/IManager.java.html">br.unicamp.ic.sed.mobilemedia.mainuimidlet_album.impl.IManager</A> mainMidlet_album;
+<FONT ID="LN">44  </FONT><A NAME="44"></A>    <A HREF="../br/unicamp/ic/sed/mobilemedia/mainuimidlet_photo/impl/IManager.java.html">br.unicamp.ic.sed.mobilemedia.mainuimidlet_photo.impl.IManager</A> mainMidlet_photo;
+<FONT ID="LN">45  </FONT><A NAME="45"></A>    <A HREF="../br/unicamp/ic/sed/mobilemedia/mainuimidlet_mobilephonemgr/impl/IManager.java.html">br.unicamp.ic.sed.mobilemedia.mainuimidlet_mobilephonemgr.impl.IManager</A> mainMidlet_mobilePhone;
+<FONT ID="LN">46  </FONT><A NAME="46"></A>    <A HREF="../br/unicamp/ic/sed/mobilemedia/filesystemmgr_album/impl/IManager.java.html">br.unicamp.ic.sed.mobilemedia.filesystemmgr_album.impl.IManager</A> filesystemmgr_album;
+<FONT ID="LN">47  </FONT><A NAME="47"></A>    <A HREF="../br/unicamp/ic/sed/mobilemedia/filesystemmgr_photo/impl/IManager.java.html">br.unicamp.ic.sed.mobilemedia.filesystemmgr_photo.impl.IManager</A> filesystemmgr_photo;
+<FONT ID="LN">48  </FONT><A NAME="48"></A>    <A HREF="../br/unicamp/ic/sed/mobilemedia/photo_album/impl/IManager.java.html">br.unicamp.ic.sed.mobilemedia.photo_album.impl.IManager</A> photo_album;
+<FONT ID="LN">49  </FONT><A NAME="49"></A>    <A HREF="../br/unicamp/ic/sed/mobilemedia/mainuimidlet_exceptionhandler/impl/IManager.java.html">br.unicamp.ic.sed.mobilemedia.mainuimidlet_exceptionhandler.impl.IManager</A> mainMidlet_exceptionHandler;
+<FONT ID="LN">50  </FONT><A NAME="50"></A>    <A HREF="../br/unicamp/ic/sed/mobilemedia/album_exceptionhandler/impl/IManager.java.html">br.unicamp.ic.sed.mobilemedia.album_exceptionhandler.impl.IManager</A> album_exceptionhandler;
+<FONT ID="LN">51  </FONT><A NAME="51"></A>    <A HREF="../br/unicamp/ic/sed/mobilemedia/photo_exceptionhandler/impl/IManager.java.html">br.unicamp.ic.sed.mobilemedia.photo_exceptionhandler.impl.IManager</A> photo_exceptionhandler; 
+<FONT ID="LN">52  </FONT><A NAME="52"></A>
+<FONT ID="LN">53  </FONT><A NAME="53"></A>    <FONT ID="Public">public</FONT> MainUIMidlet() {
+<FONT ID="LN">54  </FONT><A NAME="54"></A>        <FONT ID="SingleLineComment">//do nothing
+<FONT ID="LN">55  </FONT><A NAME="55"></A></FONT>    }
+<FONT ID="LN">56  </FONT><A NAME="56"></A>
+<FONT ID="LN">57  </FONT><A NAME="57"></A>    <FONT ID="FormalComment">/**
+<FONT ID="LN">58  </FONT><A NAME="58"></A>     * Start the MIDlet by creating new model and controller classes, and
+<FONT ID="LN">59  </FONT><A NAME="59"></A>     * initialize them as necessary
+<FONT ID="LN">60  </FONT><A NAME="60"></A>     */</FONT>
+<FONT ID="LN">61  </FONT><A NAME="61"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> startApp() <FONT ID="Throws">throws</FONT> MIDletStateChangeException {
+<FONT ID="LN">62  </FONT><A NAME="62"></A>
+<FONT ID="LN">63  </FONT><A NAME="63"></A>        System.out.println(<FONT ID="StringLiteral">"Starting MobileMediaOO - v1"</FONT>);
+<FONT ID="LN">64  </FONT><A NAME="64"></A>
+<FONT ID="LN">65  </FONT><A NAME="65"></A>        
+<FONT ID="LN">66  </FONT><A NAME="66"></A>        
+<FONT ID="LN">67  </FONT><A NAME="67"></A>        <FONT ID="SingleLineComment">// create all imanagers
+<FONT ID="LN">68  </FONT><A NAME="68"></A></FONT>        filesystem = br.unicamp.ic.sed.mobilemedia.filesystemmgr.impl.ComponentFactory.createInstance();
+<FONT ID="LN">69  </FONT><A NAME="69"></A>
+<FONT ID="LN">70  </FONT><A NAME="70"></A>        album_mobilePhone = br.unicamp.ic.sed.mobilemedia.album_mobilephonemgr.impl.ComponentFactory.createInstance();
+<FONT ID="LN">71  </FONT><A NAME="71"></A>
+<FONT ID="LN">72  </FONT><A NAME="72"></A>        mobilePhone = br.unicamp.ic.sed.mobilemedia.mobilephonemgr.impl.ComponentFactory.createInstance();
+<FONT ID="LN">73  </FONT><A NAME="73"></A>
+<FONT ID="LN">74  </FONT><A NAME="74"></A>        album = br.unicamp.ic.sed.mobilemedia.album.impl.ComponentFactory.createInstance();
+<FONT ID="LN">75  </FONT><A NAME="75"></A>
+<FONT ID="LN">76  </FONT><A NAME="76"></A>        exceptionHandler = br.unicamp.ic.sed.mobilemedia.exceptionhandler.impl.ComponentFactory.createInstance();
+<FONT ID="LN">77  </FONT><A NAME="77"></A>        
+<FONT ID="LN">78  </FONT><A NAME="78"></A>        filesystem_mobilePhone = br.unicamp.ic.sed.mobilemedia.filesystemmgr_mobilephonemgr.impl.ComponentFactory.createInstance();
+<FONT ID="LN">79  </FONT><A NAME="79"></A>        
+<FONT ID="LN">80  </FONT><A NAME="80"></A>        mainMidlet_album = br.unicamp.ic.sed.mobilemedia.mainuimidlet_album.impl.ComponentFactory.createInstance();
+<FONT ID="LN">81  </FONT><A NAME="81"></A>        
+<FONT ID="LN">82  </FONT><A NAME="82"></A>        photo = br.unicamp.ic.sed.mobilemedia.photo.impl.ComponentFactory.createInstance();
+<FONT ID="LN">83  </FONT><A NAME="83"></A>        
+<FONT ID="LN">84  </FONT><A NAME="84"></A>        photo_mobilePhone = br.unicamp.ic.sed.mobilemedia.photo_mobilephonemgr.impl.ComponentFactory.createInstance();
+<FONT ID="LN">85  </FONT><A NAME="85"></A>        
+<FONT ID="LN">86  </FONT><A NAME="86"></A>        mainMidlet_photo = br.unicamp.ic.sed.mobilemedia.mainuimidlet_photo.impl.ComponentFactory.createInstance();
+<FONT ID="LN">87  </FONT><A NAME="87"></A>        
+<FONT ID="LN">88  </FONT><A NAME="88"></A>        mainMidlet_mobilePhone = br.unicamp.ic.sed.mobilemedia.mainuimidlet_mobilephonemgr.impl.ComponentFactory.createInstance();
+<FONT ID="LN">89  </FONT><A NAME="89"></A>        
+<FONT ID="LN">90  </FONT><A NAME="90"></A>        filesystemmgr_album = br.unicamp.ic.sed.mobilemedia.filesystemmgr_album.impl.ComponentFactory.createInstance();
+<FONT ID="LN">91  </FONT><A NAME="91"></A>        
+<FONT ID="LN">92  </FONT><A NAME="92"></A>        filesystemmgr_photo = br.unicamp.ic.sed.mobilemedia.filesystemmgr_photo.impl.ComponentFactory.createInstance();
+<FONT ID="LN">93  </FONT><A NAME="93"></A>        
+<FONT ID="LN">94  </FONT><A NAME="94"></A>        photo_album = br.unicamp.ic.sed.mobilemedia.photo_album.impl.ComponentFactory.createInstance();
+<FONT ID="LN">95  </FONT><A NAME="95"></A>        
+<FONT ID="LN">96  </FONT><A NAME="96"></A>        mainMidlet_exceptionHandler = br.unicamp.ic.sed.mobilemedia.mainuimidlet_exceptionhandler.impl.ComponentFactory.createInstance();
+<FONT ID="LN">97  </FONT><A NAME="97"></A>        
+<FONT ID="LN">98  </FONT><A NAME="98"></A>        album_exceptionhandler = br.unicamp.ic.sed.mobilemedia.album_exceptionhandler.impl.ComponentFactory.createInstance();
+<FONT ID="LN">99  </FONT><A NAME="99"></A>        
+<FONT ID="LN">100 </FONT><A NAME="100"></A>        photo_exceptionhandler = br.unicamp.ic.sed.mobilemedia.photo_exceptionhandler.impl.ComponentFactory.createInstance();
+<FONT ID="LN">101 </FONT><A NAME="101"></A>        
+<FONT ID="LN">102 </FONT><A NAME="102"></A>        <FONT ID="FormalComment">/*********************************************************************************************/</FONT>
+<FONT ID="LN">103 </FONT><A NAME="103"></A>        <FONT ID="SingleLineComment">//setting required interfaces
+<FONT ID="LN">104 </FONT><A NAME="104"></A></FONT>        
+<FONT ID="LN">105 </FONT><A NAME="105"></A>        <FONT ID="SingleLineComment">//component mobilePhoneMgr
+<FONT ID="LN">106 </FONT><A NAME="106"></A></FONT>        mobilePhone.setRequiredInterface(<FONT ID="StringLiteral">"IFilesystem"</FONT>, filesystem_mobilePhone.getProvidedInterface(<FONT ID="StringLiteral">"IFilesystem"</FONT>));
+<FONT ID="LN">107 </FONT><A NAME="107"></A>        
+<FONT ID="LN">108 </FONT><A NAME="108"></A>        mobilePhone.setRequiredInterface(<FONT ID="StringLiteral">"IPhoto"</FONT>, photo_mobilePhone.getProvidedInterface(<FONT ID="StringLiteral">"IPhoto"</FONT>));
+<FONT ID="LN">109 </FONT><A NAME="109"></A>        
+<FONT ID="LN">110 </FONT><A NAME="110"></A>        mobilePhone.setRequiredInterface(<FONT ID="StringLiteral">"IMobileResources"</FONT>, mainMidlet_mobilePhone.getProvidedInterface(<FONT ID="StringLiteral">"IMobileResources"</FONT>));
+<FONT ID="LN">111 </FONT><A NAME="111"></A>        
+<FONT ID="LN">112 </FONT><A NAME="112"></A>        <A HREF="../br/unicamp/ic/sed/mobilemedia/mobilephonemgr/spec/req/IAlbum.java.html">br.unicamp.ic.sed.mobilemedia.mobilephonemgr.spec.req.IAlbum</A> ialbum = (<A HREF="../br/unicamp/ic/sed/mobilemedia/mobilephonemgr/spec/req/IAlbum.java.html">IAlbum</A>) album_mobilePhone.getProvidedInterface(<FONT ID="StringLiteral">"IAlbum"</FONT>);
+<FONT ID="LN">113 </FONT><A NAME="113"></A>        
+<FONT ID="LN">114 </FONT><A NAME="114"></A>        mobilePhone.setRequiredInterface(<FONT ID="StringLiteral">"IAlbum"</FONT>, ialbum );
+<FONT ID="LN">115 </FONT><A NAME="115"></A>        
+<FONT ID="LN">116 </FONT><A NAME="116"></A>        
+<FONT ID="LN">117 </FONT><A NAME="117"></A>        <FONT ID="SingleLineComment">//component album
+<FONT ID="LN">118 </FONT><A NAME="118"></A></FONT>        album.setRequiredInterface(<FONT ID="StringLiteral">"IMobilePhone"</FONT>, album_mobilePhone.getProvidedInterface(<FONT ID="StringLiteral">"IMobilePhone"</FONT>));
+<FONT ID="LN">119 </FONT><A NAME="119"></A>
+<FONT ID="LN">120 </FONT><A NAME="120"></A>        album.setRequiredInterface(<FONT ID="StringLiteral">"IMobileResources"</FONT>, mainMidlet_album.getProvidedInterface(<FONT ID="StringLiteral">"IMobileResources"</FONT>) );
+<FONT ID="LN">121 </FONT><A NAME="121"></A>
+<FONT ID="LN">122 </FONT><A NAME="122"></A>        album.setRequiredInterface(<FONT ID="StringLiteral">"IPhoto"</FONT>, photo_album.getProvidedInterface(<FONT ID="StringLiteral">"IPhoto"</FONT>));
+<FONT ID="LN">123 </FONT><A NAME="123"></A>
+<FONT ID="LN">124 </FONT><A NAME="124"></A>        album.setRequiredInterface(<FONT ID="StringLiteral">"IFilesystem"</FONT>,filesystemmgr_album.getProvidedInterface(<FONT ID="StringLiteral">"IFilesystem"</FONT>));
+<FONT ID="LN">125 </FONT><A NAME="125"></A>
+<FONT ID="LN">126 </FONT><A NAME="126"></A>        album.setRequiredInterface(<FONT ID="StringLiteral">"IExceptionHandler"</FONT>, album_exceptionhandler.getProvidedInterface(<FONT ID="StringLiteral">"IExceptionHandler"</FONT>));
+<FONT ID="LN">127 </FONT><A NAME="127"></A>        System.out.println(<FONT ID="StringLiteral">"step 2"</FONT>);
+<FONT ID="LN">128 </FONT><A NAME="128"></A>        
+<FONT ID="LN">129 </FONT><A NAME="129"></A>        <FONT ID="SingleLineComment">// component photo
+<FONT ID="LN">130 </FONT><A NAME="130"></A></FONT>        photo.setRequiredInterface(<FONT ID="StringLiteral">"IMobilePhone"</FONT>, photo_mobilePhone.getProvidedInterface(<FONT ID="StringLiteral">"IMobilePhone"</FONT>));
+<FONT ID="LN">131 </FONT><A NAME="131"></A>
+<FONT ID="LN">132 </FONT><A NAME="132"></A>        photo.setRequiredInterface(<FONT ID="StringLiteral">"IMobileResources"</FONT>, mainMidlet_photo.getProvidedInterface(<FONT ID="StringLiteral">"IMobileResources"</FONT>) );
+<FONT ID="LN">133 </FONT><A NAME="133"></A>
+<FONT ID="LN">134 </FONT><A NAME="134"></A>        photo.setRequiredInterface(<FONT ID="StringLiteral">"IFilesystem"</FONT>, filesystemmgr_photo.getProvidedInterface(<FONT ID="StringLiteral">"IFilesystem"</FONT>));
+<FONT ID="LN">135 </FONT><A NAME="135"></A>
+<FONT ID="LN">136 </FONT><A NAME="136"></A>        photo.setRequiredInterface(<FONT ID="StringLiteral">"IExceptionHandler"</FONT>, photo_exceptionhandler.getProvidedInterface(<FONT ID="StringLiteral">"IExceptionHandler"</FONT>));
+<FONT ID="LN">137 </FONT><A NAME="137"></A>        System.out.println(<FONT ID="StringLiteral">"step 3"</FONT>);
+<FONT ID="LN">138 </FONT><A NAME="138"></A>        
+<FONT ID="LN">139 </FONT><A NAME="139"></A>        <FONT ID="SingleLineComment">// connectors
+<FONT ID="LN">140 </FONT><A NAME="140"></A></FONT>        mainMidlet_photo.setRequiredInterface(<FONT ID="StringLiteral">"IMobileResources"</FONT>, <FONT ID="This">this</FONT> );
+<FONT ID="LN">141 </FONT><A NAME="141"></A>
+<FONT ID="LN">142 </FONT><A NAME="142"></A>        mainMidlet_mobilePhone.setRequiredInterface(<FONT ID="StringLiteral">"IMobileResources"</FONT>, <FONT ID="This">this</FONT>);
+<FONT ID="LN">143 </FONT><A NAME="143"></A>
+<FONT ID="LN">144 </FONT><A NAME="144"></A>        filesystemmgr_album.setRequiredInterface(<FONT ID="StringLiteral">"IFilesystem"</FONT>, filesystem.getProvidedInterface(<FONT ID="StringLiteral">"IFilesystem"</FONT>));
+<FONT ID="LN">145 </FONT><A NAME="145"></A>
+<FONT ID="LN">146 </FONT><A NAME="146"></A>        filesystemmgr_photo.setRequiredInterface(<FONT ID="StringLiteral">"IFilesystem"</FONT>, filesystem.getProvidedInterface(<FONT ID="StringLiteral">"IFilesystem"</FONT>));
+<FONT ID="LN">147 </FONT><A NAME="147"></A>
+<FONT ID="LN">148 </FONT><A NAME="148"></A>        photo_album.setRequiredInterface(<FONT ID="StringLiteral">"IPhoto"</FONT>, photo.getProvidedInterface(<FONT ID="StringLiteral">"IPhoto"</FONT>));
+<FONT ID="LN">149 </FONT><A NAME="149"></A>
+<FONT ID="LN">150 </FONT><A NAME="150"></A>        filesystem_mobilePhone.setRequiredInterface(<FONT ID="StringLiteral">"IFilesystem"</FONT>, filesystem.getProvidedInterface(<FONT ID="StringLiteral">"IFilesystem"</FONT>));
+<FONT ID="LN">151 </FONT><A NAME="151"></A>        System.out.println(<FONT ID="StringLiteral">"step 4"</FONT>);
+<FONT ID="LN">152 </FONT><A NAME="152"></A>        album_mobilePhone.setRequiredInterface(<FONT ID="StringLiteral">"IAlbum"</FONT>, album.getProvidedInterface(<FONT ID="StringLiteral">"IAlbum"</FONT>));
+<FONT ID="LN">153 </FONT><A NAME="153"></A>        
+<FONT ID="LN">154 </FONT><A NAME="154"></A>        album_mobilePhone.setRequiredInterface(<FONT ID="StringLiteral">"IMobilePhone"</FONT>, mobilePhone.getProvidedInterface(<FONT ID="StringLiteral">"IMobilePhone"</FONT>));
+<FONT ID="LN">155 </FONT><A NAME="155"></A>        
+<FONT ID="LN">156 </FONT><A NAME="156"></A>        photo_mobilePhone.setRequiredInterface(<FONT ID="StringLiteral">"IPhoto"</FONT>, photo.getProvidedInterface(<FONT ID="StringLiteral">"IPhoto"</FONT>));
+<FONT ID="LN">157 </FONT><A NAME="157"></A>        
+<FONT ID="LN">158 </FONT><A NAME="158"></A>        photo_mobilePhone.setRequiredInterface(<FONT ID="StringLiteral">"IMobilePhone"</FONT>, mobilePhone.getProvidedInterface(<FONT ID="StringLiteral">"IMobilePhone"</FONT>));
+<FONT ID="LN">159 </FONT><A NAME="159"></A>
+<FONT ID="LN">160 </FONT><A NAME="160"></A>        mainMidlet_album.setRequiredInterface(<FONT ID="StringLiteral">"IMobileResources"</FONT>, <FONT ID="This">this</FONT> );
+<FONT ID="LN">161 </FONT><A NAME="161"></A>
+<FONT ID="LN">162 </FONT><A NAME="162"></A>        mainMidlet_exceptionHandler.setRequiredInterface(<FONT ID="StringLiteral">"IMobileResources"</FONT>,  <FONT ID="This">this</FONT> );
+<FONT ID="LN">163 </FONT><A NAME="163"></A>        
+<FONT ID="LN">164 </FONT><A NAME="164"></A>        exceptionHandler.setRequiredInterface(<FONT ID="StringLiteral">"IMobileResources"</FONT>, mainMidlet_exceptionHandler.getProvidedInterface(<FONT ID="StringLiteral">"IMobileResources"</FONT>));
+<FONT ID="LN">165 </FONT><A NAME="165"></A>        
+<FONT ID="LN">166 </FONT><A NAME="166"></A>        album_exceptionhandler.setRequiredInterface(<FONT ID="StringLiteral">"IExceptionHandler"</FONT>, exceptionHandler.getProvidedInterface(<FONT ID="StringLiteral">"IExceptionHandler"</FONT>) );
+<FONT ID="LN">167 </FONT><A NAME="167"></A>        
+<FONT ID="LN">168 </FONT><A NAME="168"></A>        photo_exceptionhandler.setRequiredInterface(<FONT ID="StringLiteral">"IExceptionHandler"</FONT>, exceptionHandler.getProvidedInterface(<FONT ID="StringLiteral">"IExceptionHandler"</FONT>) );
+<FONT ID="LN">169 </FONT><A NAME="169"></A>        System.out.println(<FONT ID="StringLiteral">"step 5"</FONT>);
+<FONT ID="LN">170 </FONT><A NAME="170"></A>        
+<FONT ID="LN">171 </FONT><A NAME="171"></A>        
+<FONT ID="LN">172 </FONT><A NAME="172"></A>        <FONT ID="SingleLineComment">//#ifdef includeSmsFeature
+<FONT ID="LN">173 </FONT><A NAME="173"></A></FONT>        <FONT ID="MultiLineComment">/* [NC] Added in scenario 06 */</FONT>
+<FONT ID="LN">174 </FONT><A NAME="174"></A>        
+<FONT ID="LN">175 </FONT><A NAME="175"></A>        <FONT ID="Int">int</FONT> cont = <FONT ID="IntegerLiteral">0</FONT>;
+<FONT ID="LN">176 </FONT><A NAME="176"></A>        System.out.println(<FONT ID="StringLiteral">"Setting up SMS feature"</FONT>);
+<FONT ID="LN">177 </FONT><A NAME="177"></A>        <A HREF="../br/unicamp/ic/sed/mobilemedia/sms/spec/prov/IManager.java.html">br.unicamp.ic.sed.mobilemedia.sms.spec.prov.IManager</A> sms = br.unicamp.ic.sed.mobilemedia.sms.impl.ComponentFactory.createInstance();
+<FONT ID="LN">178 </FONT><A NAME="178"></A>        
+<FONT ID="LN">179 </FONT><A NAME="179"></A>        System.out.println(cont++);
+<FONT ID="LN">180 </FONT><A NAME="180"></A>        <FONT ID="SingleLineComment">//Sms-MobileResources
+<FONT ID="LN">181 </FONT><A NAME="181"></A></FONT>        <A HREF="../br/unicamp/ic/sed/mobilemedia/mainuimidlet_sms/impl/IManager.java.html">br.unicamp.ic.sed.mobilemedia.mainuimidlet_sms.impl.IManager</A> mobile_sms = br.unicamp.ic.sed.mobilemedia.mainuimidlet_sms.impl.ComponentFactory.createInstance();
+<FONT ID="LN">182 </FONT><A NAME="182"></A>        mobile_sms.setRequiredInterface(<FONT ID="StringLiteral">"IMobileResources"</FONT>, <FONT ID="This">this</FONT>);
+<FONT ID="LN">183 </FONT><A NAME="183"></A>        
+<FONT ID="LN">184 </FONT><A NAME="184"></A>        sms.setRequiredInterface(<FONT ID="StringLiteral">"IMobileResources"</FONT>, mobile_sms.getProvidedInterface(<FONT ID="StringLiteral">"IMobileResources"</FONT>));
+<FONT ID="LN">185 </FONT><A NAME="185"></A>    
+<FONT ID="LN">186 </FONT><A NAME="186"></A>        System.out.println(cont++);
+<FONT ID="LN">187 </FONT><A NAME="187"></A>        <FONT ID="SingleLineComment">//Photo-Sms
+<FONT ID="LN">188 </FONT><A NAME="188"></A></FONT>        <A HREF="../br/unicamp/ic/sed/mobilemedia/sms_photo/IManager.java.html">br.unicamp.ic.sed.mobilemedia.sms_photo.IManager</A> photo_sms = br.unicamp.ic.sed.mobilemedia.sms_photo.ComponentFactory.createInstance();
+<FONT ID="LN">189 </FONT><A NAME="189"></A>        
+<FONT ID="LN">190 </FONT><A NAME="190"></A>        photo_sms.setRequiredInterface(<FONT ID="StringLiteral">"IPhoto"</FONT>, photo.getProvidedInterface(<FONT ID="StringLiteral">"IPhoto"</FONT>));
+<FONT ID="LN">191 </FONT><A NAME="191"></A>        photo_sms.setRequiredInterface(<FONT ID="StringLiteral">"ISms"</FONT>, sms.getProvidedInterface(<FONT ID="StringLiteral">"ISms"</FONT>));
+<FONT ID="LN">192 </FONT><A NAME="192"></A>        photo.setRequiredInterface(<FONT ID="StringLiteral">"ISms"</FONT>, photo_sms.getProvidedInterface(<FONT ID="StringLiteral">"ISms"</FONT>));
+<FONT ID="LN">193 </FONT><A NAME="193"></A>        sms.setRequiredInterface(<FONT ID="StringLiteral">"IPhoto"</FONT>, photo_sms.getProvidedInterface(<FONT ID="StringLiteral">"IPhoto"</FONT>));
+<FONT ID="LN">194 </FONT><A NAME="194"></A>        
+<FONT ID="LN">195 </FONT><A NAME="195"></A>        System.out.println(cont++);
+<FONT ID="LN">196 </FONT><A NAME="196"></A>        <FONT ID="SingleLineComment">//sms-filesystem
+<FONT ID="LN">197 </FONT><A NAME="197"></A></FONT>        <A HREF="../br/unicamp/ic/sed/mobilemedia/sms_filesystem/IManager.java.html">br.unicamp.ic.sed.mobilemedia.sms_filesystem.IManager</A> sms_filesystem = br.unicamp.ic.sed.mobilemedia.sms_filesystem.ComponentFactory.createInstance(); 
+<FONT ID="LN">198 </FONT><A NAME="198"></A>        
+<FONT ID="LN">199 </FONT><A NAME="199"></A>        System.out.println(cont++);
+<FONT ID="LN">200 </FONT><A NAME="200"></A>        sms_filesystem.setRequiredInterface(<FONT ID="StringLiteral">"IFilesystem"</FONT>,filesystem.getProvidedInterface(<FONT ID="StringLiteral">"IFilesystem"</FONT>));
+<FONT ID="LN">201 </FONT><A NAME="201"></A>        sms.setRequiredInterface(<FONT ID="StringLiteral">"IFilesystem"</FONT>, sms_filesystem.getProvidedInterface(<FONT ID="StringLiteral">"IFilesystem"</FONT> ));
+<FONT ID="LN">202 </FONT><A NAME="202"></A>        
+<FONT ID="LN">203 </FONT><A NAME="203"></A>        System.out.println(cont++);
+<FONT ID="LN">204 </FONT><A NAME="204"></A>        <FONT ID="SingleLineComment">//sms-album
+<FONT ID="LN">205 </FONT><A NAME="205"></A></FONT>        <A HREF="../br/unicamp/ic/sed/mobilemedia/sms_album/IManager.java.html">br.unicamp.ic.sed.mobilemedia.sms_album.IManager</A> sms_album = br.unicamp.ic.sed.mobilemedia.sms_album.ComponentFactory.createInstance();
+<FONT ID="LN">206 </FONT><A NAME="206"></A>        
+<FONT ID="LN">207 </FONT><A NAME="207"></A>        System.out.println(cont++);
+<FONT ID="LN">208 </FONT><A NAME="208"></A>        sms_album.setRequiredInterface(<FONT ID="StringLiteral">"IAlbum"</FONT>, album.getProvidedInterface(<FONT ID="StringLiteral">"IAlbum"</FONT>));
+<FONT ID="LN">209 </FONT><A NAME="209"></A>        sms.setRequiredInterface(<FONT ID="StringLiteral">"IAlbum"</FONT>, sms_album.getProvidedInterface(<FONT ID="StringLiteral">"IAlbum"</FONT>));
+<FONT ID="LN">210 </FONT><A NAME="210"></A>        
+<FONT ID="LN">211 </FONT><A NAME="211"></A>        <FONT ID="SingleLineComment">//sms-exceptionhandler
+<FONT ID="LN">212 </FONT><A NAME="212"></A></FONT>        <A HREF="../br/unicamp/ic/sed/mobilemedia/sms_exceptionhandler/IManager.java.html">br.unicamp.ic.sed.mobilemedia.sms_exceptionhandler.IManager</A> sms_exceptionHandler = br.unicamp.ic.sed.mobilemedia.sms_exceptionhandler.ComponentFactory.createInstance();
+<FONT ID="LN">213 </FONT><A NAME="213"></A>        sms_exceptionHandler.setRequiredInterface(<FONT ID="StringLiteral">"IExceptionHandler"</FONT>, exceptionHandler.getProvidedInterface(<FONT ID="StringLiteral">"IExceptionHandler"</FONT>));
+<FONT ID="LN">214 </FONT><A NAME="214"></A>        sms.setRequiredInterface(<FONT ID="StringLiteral">"IExceptionHandler"</FONT>, sms_exceptionHandler.getProvidedInterface(<FONT ID="StringLiteral">"IExceptionHandler"</FONT>));
+<FONT ID="LN">215 </FONT><A NAME="215"></A>        
+<FONT ID="LN">216 </FONT><A NAME="216"></A>        System.out.println(cont++);
+<FONT ID="LN">217 </FONT><A NAME="217"></A>        System.out.println(<FONT ID="StringLiteral">"SMS feature configured"</FONT>);
+<FONT ID="LN">218 </FONT><A NAME="218"></A>        
+<FONT ID="LN">219 </FONT><A NAME="219"></A>        <FONT ID="SingleLineComment">//#endif
+<FONT ID="LN">220 </FONT><A NAME="220"></A></FONT>        
+<FONT ID="LN">221 </FONT><A NAME="221"></A>        
+<FONT ID="LN">222 </FONT><A NAME="222"></A>        <A HREF="../br/unicamp/ic/sed/mobilemedia/mobilephonemgr/spec/prov/IMobilePhone.java.html">IMobilePhone</A> mobPhone = (<A HREF="../br/unicamp/ic/sed/mobilemedia/mobilephonemgr/spec/prov/IMobilePhone.java.html">IMobilePhone</A>) mobilePhone.getProvidedInterface(<FONT ID="StringLiteral">"IMobilePhone"</FONT>);
+<FONT ID="LN">223 </FONT><A NAME="223"></A>
+<FONT ID="LN">224 </FONT><A NAME="224"></A>        System.out.println(<FONT ID="StringLiteral">"mobPhone.startUp()"</FONT>);
+<FONT ID="LN">225 </FONT><A NAME="225"></A>
+<FONT ID="LN">226 </FONT><A NAME="226"></A>        mobPhone.startUp();
+<FONT ID="LN">227 </FONT><A NAME="227"></A>    }
+<FONT ID="LN">228 </FONT><A NAME="228"></A>
+<FONT ID="LN">229 </FONT><A NAME="229"></A>    <FONT ID="FormalComment">/**
+<FONT ID="LN">230 </FONT><A NAME="230"></A>     * Pause the MIDlet
+<FONT ID="LN">231 </FONT><A NAME="231"></A>     * This method does nothing at the moment.
+<FONT ID="LN">232 </FONT><A NAME="232"></A>     */</FONT>
+<FONT ID="LN">233 </FONT><A NAME="233"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> pauseApp() {
+<FONT ID="LN">234 </FONT><A NAME="234"></A>        <FONT ID="SingleLineComment">//do nothing
+<FONT ID="LN">235 </FONT><A NAME="235"></A></FONT>    }
+<FONT ID="LN">236 </FONT><A NAME="236"></A>
+<FONT ID="LN">237 </FONT><A NAME="237"></A>    <FONT ID="FormalComment">/**
+<FONT ID="LN">238 </FONT><A NAME="238"></A>     * Destroy the MIDlet
+<FONT ID="LN">239 </FONT><A NAME="239"></A>     */</FONT>
+<FONT ID="LN">240 </FONT><A NAME="240"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> destroyApp(<FONT ID="Boolean">boolean</FONT> unconditional) {
+<FONT ID="LN">241 </FONT><A NAME="241"></A>        notifyDestroyed();
+<FONT ID="LN">242 </FONT><A NAME="242"></A>    }
+<FONT ID="LN">243 </FONT><A NAME="243"></A>
+<FONT ID="LN">244 </FONT><A NAME="244"></A>    <FONT ID="Public">public</FONT> MIDlet getMainMIDlet() {
+<FONT ID="LN">245 </FONT><A NAME="245"></A>        <FONT ID="Return">return</FONT> <FONT ID="This">this</FONT>;
+<FONT ID="LN">246 </FONT><A NAME="246"></A>    }
+<FONT ID="LN">247 </FONT><A NAME="247"></A>
+<FONT ID="LN">248 </FONT><A NAME="248"></A>    
+<FONT ID="LN">249 </FONT><A NAME="249"></A>}</pre>
+</BODY>
+</HTML>

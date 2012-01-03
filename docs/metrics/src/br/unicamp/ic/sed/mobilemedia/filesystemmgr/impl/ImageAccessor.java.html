@@ -1,0 +1,635 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<HTML>
+<HEAD>
+<LINK REL=STYLESHEET TYPE="text/css" HREF="../../../../../../../stylesheet.css" TITLE="Style">
+<META NAME="GENERATOR" CONTENT="Java2HTML Version 1.5">
+<TITLE>br.unicamp.ic.sed.mobilemedia.filesystemmgr.impl.ImageAccessor (Java2HTML)</TITLE>
+</HEAD>
+<BODY><TABLE id="Header" border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td colspan="2" width="33%">&nbsp;</td>
+<td align="center" colspan="2" width="33%">
+<font size="4">ImageAccessor.java</font>
+</td>
+<td align="right" colspan="2" width="33%">&nbsp;</td>
+</tr>
+</TABLE>
+<pre ID="Classes">
+<FONT ID="LN">1   </FONT><A NAME="1"></A><FONT ID="FormalComment">/**
+<FONT ID="LN">2   </FONT><A NAME="2"></A> * University of Campinas - Brazil
+<FONT ID="LN">3   </FONT><A NAME="3"></A> * Institute of Computing
+<FONT ID="LN">4   </FONT><A NAME="4"></A> * SED group
+<FONT ID="LN">5   </FONT><A NAME="5"></A> *
+<FONT ID="LN">6   </FONT><A NAME="6"></A> * date: February 2009
+<FONT ID="LN">7   </FONT><A NAME="7"></A> * 
+<FONT ID="LN">8   </FONT><A NAME="8"></A> */</FONT>
+<FONT ID="LN">9   </FONT><A NAME="9"></A><FONT ID="Package">package</FONT> br.unicamp.ic.sed.mobilemedia.filesystemmgr.impl;
+<FONT ID="LN">10  </FONT><A NAME="10"></A>
+<FONT ID="LN">11  </FONT><A NAME="11"></A><FONT ID="Import">import</FONT> java.util.Enumeration;
+<FONT ID="LN">12  </FONT><A NAME="12"></A><FONT ID="Import">import</FONT> java.util.Vector;
+<FONT ID="LN">13  </FONT><A NAME="13"></A>
+<FONT ID="LN">14  </FONT><A NAME="14"></A><FONT ID="Import">import</FONT> javax.microedition.lcdui.Image;
+<FONT ID="LN">15  </FONT><A NAME="15"></A><FONT ID="Import">import</FONT> javax.microedition.rms.RecordEnumeration;
+<FONT ID="LN">16  </FONT><A NAME="16"></A><FONT ID="Import">import</FONT> javax.microedition.rms.RecordStore;
+<FONT ID="LN">17  </FONT><A NAME="17"></A><FONT ID="Import">import</FONT> javax.microedition.rms.RecordStoreException;
+<FONT ID="LN">18  </FONT><A NAME="18"></A><FONT ID="Import">import</FONT> javax.microedition.rms.RecordStoreNotOpenException;
+<FONT ID="LN">19  </FONT><A NAME="19"></A>
+<FONT ID="LN">20  </FONT><A NAME="20"></A><FONT ID="Import">import</FONT> <A HREF="../../../../../../../main/IImageData.java.html">main.IImageData</A>;
+<FONT ID="LN">21  </FONT><A NAME="21"></A><FONT ID="Import">import</FONT> <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/filesystemmgr/spec/dt/ImageData.java.html">br.unicamp.ic.sed.mobilemedia.filesystemmgr.spec.dt.ImageData</A>;
+<FONT ID="LN">22  </FONT><A NAME="22"></A><FONT ID="Import">import</FONT> <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/filesystemmgr/spec/excep/ImageNotFoundException.java.html">br.unicamp.ic.sed.mobilemedia.filesystemmgr.spec.excep.ImageNotFoundException</A>;
+<FONT ID="LN">23  </FONT><A NAME="23"></A><FONT ID="Import">import</FONT> <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/filesystemmgr/spec/excep/ImagePathNotValidException.java.html">br.unicamp.ic.sed.mobilemedia.filesystemmgr.spec.excep.ImagePathNotValidException</A>;
+<FONT ID="LN">24  </FONT><A NAME="24"></A><FONT ID="Import">import</FONT> <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/filesystemmgr/spec/excep/InvalidImageDataException.java.html">br.unicamp.ic.sed.mobilemedia.filesystemmgr.spec.excep.InvalidImageDataException</A>;
+<FONT ID="LN">25  </FONT><A NAME="25"></A><FONT ID="Import">import</FONT> <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/filesystemmgr/spec/excep/InvalidImageFormatException.java.html">br.unicamp.ic.sed.mobilemedia.filesystemmgr.spec.excep.InvalidImageFormatException</A>;
+<FONT ID="LN">26  </FONT><A NAME="26"></A><FONT ID="Import">import</FONT> <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/filesystemmgr/spec/excep/InvalidPhotoAlbumNameException.java.html">br.unicamp.ic.sed.mobilemedia.filesystemmgr.spec.excep.InvalidPhotoAlbumNameException</A>;
+<FONT ID="LN">27  </FONT><A NAME="27"></A><FONT ID="Import">import</FONT> <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/filesystemmgr/spec/excep/NullAlbumDataReference.java.html">br.unicamp.ic.sed.mobilemedia.filesystemmgr.spec.excep.NullAlbumDataReference</A>;
+<FONT ID="LN">28  </FONT><A NAME="28"></A><FONT ID="Import">import</FONT> <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/filesystemmgr/spec/excep/PersistenceMechanismException.java.html">br.unicamp.ic.sed.mobilemedia.filesystemmgr.spec.excep.PersistenceMechanismException</A>;
+<FONT ID="LN">29  </FONT><A NAME="29"></A>
+<FONT ID="LN">30  </FONT><A NAME="30"></A><FONT ID="FormalComment">/**
+<FONT ID="LN">31  </FONT><A NAME="31"></A> * @author trevor
+<FONT ID="LN">32  </FONT><A NAME="32"></A> * 
+<FONT ID="LN">33  </FONT><A NAME="33"></A> * This is the main data access class. It handles all the connectivity with the
+<FONT ID="LN">34  </FONT><A NAME="34"></A> * RMS record stores to fetch and save data associated with MobileMedia TODO:
+<FONT ID="LN">35  </FONT><A NAME="35"></A> * Refactor into stable interface for future updates. We may want to access data
+<FONT ID="LN">36  </FONT><A NAME="36"></A> * from RMS, or eventually direct from the 'file system' on devices that support
+<FONT ID="LN">37  </FONT><A NAME="37"></A> * the FileConnection optional API.
+<FONT ID="LN">38  </FONT><A NAME="38"></A> * 
+<FONT ID="LN">39  </FONT><A NAME="39"></A> */</FONT>
+<FONT ID="LN">40  </FONT><A NAME="40"></A>
+<FONT ID="LN">41  </FONT><A NAME="41"></A>
+<FONT ID="LN">42  </FONT><A NAME="42"></A><FONT ID="Public">public</FONT> <FONT ID="Class">class</FONT> ImageAccessor {
+<FONT ID="LN">43  </FONT><A NAME="43"></A>
+<FONT ID="LN">44  </FONT><A NAME="44"></A>    <FONT ID="SingleLineComment">// Note: Our midlet only ever has access to Record Stores it created
+<FONT ID="LN">45  </FONT><A NAME="45"></A></FONT>    <FONT ID="SingleLineComment">// For now, use naming convention to create record stores used by
+<FONT ID="LN">46  </FONT><A NAME="46"></A></FONT>    <FONT ID="SingleLineComment">// MobileMedia
+<FONT ID="LN">47  </FONT><A NAME="47"></A></FONT>
+<FONT ID="LN">48  </FONT><A NAME="48"></A>    <FONT ID="Public">public</FONT> <FONT ID="Static">static</FONT> <FONT ID="Final">final</FONT> String ALBUM_LABEL = <FONT ID="StringLiteral">"mpa-"</FONT>; <FONT ID="SingleLineComment">// "mpa- all album names
+<FONT ID="LN">49  </FONT><A NAME="49"></A></FONT>    <FONT ID="SingleLineComment">// stores are prefixed with
+<FONT ID="LN">50  </FONT><A NAME="50"></A></FONT>    <FONT ID="SingleLineComment">// this label
+<FONT ID="LN">51  </FONT><A NAME="51"></A></FONT>    <FONT ID="Public">public</FONT> <FONT ID="Static">static</FONT> <FONT ID="Final">final</FONT> String DEFAULT_ALBUM_NAME = <FONT ID="StringLiteral">"My Photo Album"</FONT>; <FONT ID="SingleLineComment">// default
+<FONT ID="LN">52  </FONT><A NAME="52"></A></FONT>    <FONT ID="SingleLineComment">// album
+<FONT ID="LN">53  </FONT><A NAME="53"></A></FONT>    <FONT ID="SingleLineComment">// name
+<FONT ID="LN">54  </FONT><A NAME="54"></A></FONT>    <FONT ID="Public">public</FONT> <FONT ID="Static">static</FONT> <FONT ID="Final">final</FONT> String IMAGE_LABEL = <FONT ID="StringLiteral">"ImageList"</FONT>; <FONT ID="SingleLineComment">// RecordStore name
+<FONT ID="LN">55  </FONT><A NAME="55"></A></FONT>    <FONT ID="SingleLineComment">// prefixed
+<FONT ID="LN">56  </FONT><A NAME="56"></A></FONT>
+<FONT ID="LN">57  </FONT><A NAME="57"></A>    <FONT ID="SingleLineComment">// are prefixed with
+<FONT ID="LN">58  </FONT><A NAME="58"></A></FONT>    <FONT ID="SingleLineComment">// this label
+<FONT ID="LN">59  </FONT><A NAME="59"></A></FONT>    <FONT ID="Public">public</FONT> <FONT ID="Static">static</FONT> <FONT ID="Final">final</FONT> String INFO_LABEL = <FONT ID="StringLiteral">"mpi-"</FONT>; <FONT ID="SingleLineComment">// "mpi- all album info
+<FONT ID="LN">60  </FONT><A NAME="60"></A></FONT>
+<FONT ID="LN">61  </FONT><A NAME="61"></A>    <FONT ID="Private">private</FONT> <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/filesystemmgr/impl/AlbumData.java.html">AlbumData</A> albumData;
+<FONT ID="LN">62  </FONT><A NAME="62"></A>
+<FONT ID="LN">63  </FONT><A NAME="63"></A>    <FONT ID="Private">private</FONT> String[] albumNames; <FONT ID="SingleLineComment">// User defined names of photo albums
+<FONT ID="LN">64  </FONT><A NAME="64"></A></FONT>
+<FONT ID="LN">65  </FONT><A NAME="65"></A>    <FONT ID="Private">private</FONT> RecordStore imageInfoRS = <FONT ID="Null">null</FONT>;
+<FONT ID="LN">66  </FONT><A NAME="66"></A>    <FONT ID="SingleLineComment">// Record Stores
+<FONT ID="LN">67  </FONT><A NAME="67"></A></FONT>    <FONT ID="Private">private</FONT> RecordStore imageRS = <FONT ID="Null">null</FONT>;
+<FONT ID="LN">68  </FONT><A NAME="68"></A>
+<FONT ID="LN">69  </FONT><A NAME="69"></A>    <FONT ID="MultiLineComment">/*
+<FONT ID="LN">70  </FONT><A NAME="70"></A>     * Constructor
+<FONT ID="LN">71  </FONT><A NAME="71"></A>     */</FONT>
+<FONT ID="LN">72  </FONT><A NAME="72"></A>    <FONT ID="Public">public</FONT> ImageAccessor(<A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/filesystemmgr/impl/AlbumData.java.html">AlbumData</A> mod) {
+<FONT ID="LN">73  </FONT><A NAME="73"></A>        System.out.println(<FONT ID="StringLiteral">"[ImageAccessor] constructor"</FONT>+<FONT ID="This">this</FONT>.toString());
+<FONT ID="LN">74  </FONT><A NAME="74"></A>        <FONT ID="This">this</FONT>.albumData = mod;
+<FONT ID="LN">75  </FONT><A NAME="75"></A>    }
+<FONT ID="LN">76  </FONT><A NAME="76"></A>
+<FONT ID="LN">77  </FONT><A NAME="77"></A>    
+<FONT ID="LN">78  </FONT><A NAME="78"></A>    <FONT ID="SingleLineComment">// #ifdef includeSmsFeature
+<FONT ID="LN">79  </FONT><A NAME="79"></A></FONT>    <FONT ID="MultiLineComment">/* [NC] Added in scenario 06 */</FONT>
+<FONT ID="LN">80  </FONT><A NAME="80"></A>    <FONT ID="FormalComment">/**[Original][cosmos sms]Included in cosmos v5*/</FONT>
+<FONT ID="LN">81  </FONT><A NAME="81"></A>    <FONT ID="MultiLineComment">/*private byte[] getByteFromImage(Image img){
+<FONT ID="LN">82  </FONT><A NAME="82"></A>        int w = img.getWidth();
+<FONT ID="LN">83  </FONT><A NAME="83"></A>        int h = img.getHeight();
+<FONT ID="LN">84  </FONT><A NAME="84"></A>        int data_int[] = new int[ w * h ];
+<FONT ID="LN">85  </FONT><A NAME="85"></A>        img.getRGB( data_int, 0, w, 0, 0, w, h );
+<FONT ID="LN">86  </FONT><A NAME="86"></A>        byte[] data_byte = new byte[ w * h * 3 ];
+<FONT ID="LN">87  </FONT><A NAME="87"></A>        for ( int i = 0; i &lt; w * h; ++i )
+<FONT ID="LN">88  </FONT><A NAME="88"></A>        {
+<FONT ID="LN">89  </FONT><A NAME="89"></A>        int color = data_int[ i ];
+<FONT ID="LN">90  </FONT><A NAME="90"></A>        int offset = i * 3;
+<FONT ID="LN">91  </FONT><A NAME="91"></A>        data_byte[ offset ] = ( byte ) ( ( color &amp; 0xff0000 ) &gt;&gt; 16 );
+<FONT ID="LN">92  </FONT><A NAME="92"></A>        data_byte[ offset +
+<FONT ID="LN">93  </FONT><A NAME="93"></A>        1 ] = ( byte ) ( ( color &amp; 0xff00 ) &gt;&gt; 8 );
+<FONT ID="LN">94  </FONT><A NAME="94"></A>        data_byte[ offset + 2 ] = ( byte ) ( ( color &amp; 0xff ) );
+<FONT ID="LN">95  </FONT><A NAME="95"></A>        }
+<FONT ID="LN">96  </FONT><A NAME="96"></A>        return data_byte;
+<FONT ID="LN">97  </FONT><A NAME="97"></A>    }*/</FONT>
+<FONT ID="LN">98  </FONT><A NAME="98"></A>    
+<FONT ID="LN">99  </FONT><A NAME="99"></A>    <FONT ID="FormalComment">/**[Original][cosmos sms]Included in cosmos v5*/</FONT>
+<FONT ID="LN">100 </FONT><A NAME="100"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> addMediaArrayOfBytes(String photoname, 
+<FONT ID="LN">101 </FONT><A NAME="101"></A>            <FONT ID="Byte">byte</FONT>[] data1, String albumname) <FONT ID="Throws">throws</FONT> RecordStoreException, <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/filesystemmgr/spec/excep/InvalidImageDataException.java.html">InvalidImageDataException</A> {    
+<FONT ID="LN">102 </FONT><A NAME="102"></A>        imageRS = RecordStore.openRecordStore(ALBUM_LABEL + albumname, <FONT ID="False">false</FONT>);
+<FONT ID="LN">103 </FONT><A NAME="103"></A>        imageInfoRS = RecordStore.openRecordStore(INFO_LABEL + albumname, <FONT ID="False">false</FONT>);
+<FONT ID="LN">104 </FONT><A NAME="104"></A>        
+<FONT ID="LN">105 </FONT><A NAME="105"></A>        <FONT ID="Int">int</FONT> rid; <FONT ID="SingleLineComment">// new record ID for Image (bytes)
+<FONT ID="LN">106 </FONT><A NAME="106"></A></FONT>        <FONT ID="Int">int</FONT> rid2; <FONT ID="SingleLineComment">// new record ID for ImageData (metadata)
+<FONT ID="LN">107 </FONT><A NAME="107"></A></FONT>        rid = imageRS.addRecord(data1, <FONT ID="IntegerLiteral">0</FONT>, data1.length);
+<FONT ID="LN">108 </FONT><A NAME="108"></A>        <A HREF="../../../../../../../main/IImageData.java.html">ImageData</A> ii = <FONT ID="New">new</FONT> <A HREF="../../../../../../../main/IImageData.java.html">ImageData</A>(rid,ImageAccessor.ALBUM_LABEL + albumname, photoname);
+<FONT ID="LN">109 </FONT><A NAME="109"></A>        rid2 = imageInfoRS.getNextRecordID();
+<FONT ID="LN">110 </FONT><A NAME="110"></A>        ii.setRecordId(rid2);
+<FONT ID="LN">111 </FONT><A NAME="111"></A>        
+<FONT ID="LN">112 </FONT><A NAME="112"></A>        <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/filesystemmgr/impl/ImageUtil.java.html">ImageUtil</A> converter = <FONT ID="New">new</FONT> <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/filesystemmgr/impl/ImageUtil.java.html">ImageUtil</A>();
+<FONT ID="LN">113 </FONT><A NAME="113"></A>        data1 = converter.getBytesFromImageInfo(ii);
+<FONT ID="LN">114 </FONT><A NAME="114"></A>        imageInfoRS.addRecord(data1, <FONT ID="IntegerLiteral">0</FONT>, data1.length);
+<FONT ID="LN">115 </FONT><A NAME="115"></A>                
+<FONT ID="LN">116 </FONT><A NAME="116"></A>        imageRS.closeRecordStore();
+<FONT ID="LN">117 </FONT><A NAME="117"></A>        imageInfoRS.closeRecordStore();
+<FONT ID="LN">118 </FONT><A NAME="118"></A>    }
+<FONT ID="LN">119 </FONT><A NAME="119"></A>    <FONT ID="SingleLineComment">//#endif
+<FONT ID="LN">120 </FONT><A NAME="120"></A></FONT>    
+<FONT ID="LN">121 </FONT><A NAME="121"></A>    <FONT ID="SingleLineComment">// #ifdef includeCopyPhoto
+<FONT ID="LN">122 </FONT><A NAME="122"></A></FONT>    <FONT ID="FormalComment">/**
+<FONT ID="LN">123 </FONT><A NAME="123"></A>     * Added in MobileMedia-Cosmos-OO-v4
+<FONT ID="LN">124 </FONT><A NAME="124"></A>     * @param photoname
+<FONT ID="LN">125 </FONT><A NAME="125"></A>     * @param imageData
+<FONT ID="LN">126 </FONT><A NAME="126"></A>     * @param albumname
+<FONT ID="LN">127 </FONT><A NAME="127"></A>     * @throws InvalidImageDataException
+<FONT ID="LN">128 </FONT><A NAME="128"></A>     * @throws PersistenceMechanismException
+<FONT ID="LN">129 </FONT><A NAME="129"></A>     */</FONT>
+<FONT ID="LN">130 </FONT><A NAME="130"></A>    <FONT ID="Protected">protected</FONT> <FONT ID="Void">void</FONT> addImageData(String photoname, <A HREF="../../../../../../../main/IImageData.java.html">IImageData</A> imageData, String albumname) <FONT ID="Throws">throws</FONT> <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/filesystemmgr/spec/excep/InvalidImageDataException.java.html">InvalidImageDataException</A>, <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/filesystemmgr/spec/excep/PersistenceMechanismException.java.html">PersistenceMechanismException</A> {
+<FONT ID="LN">131 </FONT><A NAME="131"></A>        <FONT ID="Try">try</FONT> {
+<FONT ID="LN">132 </FONT><A NAME="132"></A>            
+<FONT ID="LN">133 </FONT><A NAME="133"></A>            
+<FONT ID="LN">134 </FONT><A NAME="134"></A>            imageRS = RecordStore.openRecordStore(ALBUM_LABEL + albumname, <FONT ID="True">true</FONT>);
+<FONT ID="LN">135 </FONT><A NAME="135"></A>            imageInfoRS = RecordStore.openRecordStore(INFO_LABEL + albumname, <FONT ID="True">true</FONT>);
+<FONT ID="LN">136 </FONT><A NAME="136"></A>            <FONT ID="Int">int</FONT> rid2; <FONT ID="SingleLineComment">// new record ID for ImageData (metadata)
+<FONT ID="LN">137 </FONT><A NAME="137"></A></FONT>            <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/filesystemmgr/impl/ImageUtil.java.html">ImageUtil</A> converter = <FONT ID="New">new</FONT> <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/filesystemmgr/impl/ImageUtil.java.html">ImageUtil</A>();
+<FONT ID="LN">138 </FONT><A NAME="138"></A>            rid2 = imageInfoRS.getNextRecordID();
+<FONT ID="LN">139 </FONT><A NAME="139"></A>            
+<FONT ID="LN">140 </FONT><A NAME="140"></A>            imageData.setRecordId(rid2);
+<FONT ID="LN">141 </FONT><A NAME="141"></A>            imageData.setImageLabel( photoname );
+<FONT ID="LN">142 </FONT><A NAME="142"></A>            imageData.setParentAlbumName( ALBUM_LABEL + albumname );
+<FONT ID="LN">143 </FONT><A NAME="143"></A>            
+<FONT ID="LN">144 </FONT><A NAME="144"></A>            System.out.println(<FONT ID="StringLiteral">"[ImageAccessor.addImageData] imageLabel="</FONT>+imageData.getImageLabel()+<FONT ID="StringLiteral">" parentAlbumName="</FONT>+imageData.getParentAlbumName());
+<FONT ID="LN">145 </FONT><A NAME="145"></A>            <FONT ID="Byte">byte</FONT>[] data1 = converter.getBytesFromImageInfo(imageData);
+<FONT ID="LN">146 </FONT><A NAME="146"></A>            imageInfoRS.addRecord(data1, <FONT ID="IntegerLiteral">0</FONT>, data1.length);
+<FONT ID="LN">147 </FONT><A NAME="147"></A>        } <FONT ID="Catch">catch</FONT> (RecordStoreException e) {
+<FONT ID="LN">148 </FONT><A NAME="148"></A>            <FONT ID="Throw">throw</FONT> <FONT ID="New">new</FONT> <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/filesystemmgr/spec/excep/PersistenceMechanismException.java.html">PersistenceMechanismException</A>( e.getMessage() );
+<FONT ID="LN">149 </FONT><A NAME="149"></A>        }<FONT ID="Finally">finally</FONT>{
+<FONT ID="LN">150 </FONT><A NAME="150"></A>            <FONT ID="Try">try</FONT> {
+<FONT ID="LN">151 </FONT><A NAME="151"></A>                imageRS.closeRecordStore();
+<FONT ID="LN">152 </FONT><A NAME="152"></A>                imageInfoRS.closeRecordStore();
+<FONT ID="LN">153 </FONT><A NAME="153"></A>            } <FONT ID="Catch">catch</FONT> (RecordStoreNotOpenException e) {
+<FONT ID="LN">154 </FONT><A NAME="154"></A>                e.printStackTrace();
+<FONT ID="LN">155 </FONT><A NAME="155"></A>            } <FONT ID="Catch">catch</FONT> (RecordStoreException e) {
+<FONT ID="LN">156 </FONT><A NAME="156"></A>                e.printStackTrace();
+<FONT ID="LN">157 </FONT><A NAME="157"></A>            }
+<FONT ID="LN">158 </FONT><A NAME="158"></A>        }
+<FONT ID="LN">159 </FONT><A NAME="159"></A>    }
+<FONT ID="LN">160 </FONT><A NAME="160"></A>    <FONT ID="SingleLineComment">// #endif
+<FONT ID="LN">161 </FONT><A NAME="161"></A></FONT>
+<FONT ID="LN">162 </FONT><A NAME="162"></A>    
+<FONT ID="LN">163 </FONT><A NAME="163"></A>
+<FONT ID="LN">164 </FONT><A NAME="164"></A>    <FONT ID="Protected">protected</FONT> <FONT ID="Void">void</FONT> addImageData(String photoname, String path, String albumname)
+<FONT ID="LN">165 </FONT><A NAME="165"></A>    <FONT ID="Throws">throws</FONT> <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/filesystemmgr/spec/excep/InvalidImageDataException.java.html">InvalidImageDataException</A>, <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/filesystemmgr/spec/excep/PersistenceMechanismException.java.html">PersistenceMechanismException</A> {
+<FONT ID="LN">166 </FONT><A NAME="166"></A>
+<FONT ID="LN">167 </FONT><A NAME="167"></A>        <FONT ID="SingleLineComment">//      System.out.println("&lt;* ImageAccessor.addImageData *&gt; photoname = "+photoname);
+<FONT ID="LN">168 </FONT><A NAME="168"></A></FONT>        <FONT ID="Try">try</FONT> {
+<FONT ID="LN">169 </FONT><A NAME="169"></A>            imageRS = RecordStore
+<FONT ID="LN">170 </FONT><A NAME="170"></A>            .openRecordStore(ALBUM_LABEL + albumname, <FONT ID="True">true</FONT>);
+<FONT ID="LN">171 </FONT><A NAME="171"></A>            imageInfoRS = RecordStore.openRecordStore(INFO_LABEL + albumname,
+<FONT ID="LN">172 </FONT><A NAME="172"></A>                    <FONT ID="True">true</FONT>);
+<FONT ID="LN">173 </FONT><A NAME="173"></A>
+<FONT ID="LN">174 </FONT><A NAME="174"></A>            <FONT ID="Int">int</FONT> rid; <FONT ID="SingleLineComment">// new record ID for Image (bytes)
+<FONT ID="LN">175 </FONT><A NAME="175"></A></FONT>            <FONT ID="Int">int</FONT> rid2; <FONT ID="SingleLineComment">// new record ID for ImageData (metadata)
+<FONT ID="LN">176 </FONT><A NAME="176"></A></FONT>
+<FONT ID="LN">177 </FONT><A NAME="177"></A>            <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/filesystemmgr/impl/ImageUtil.java.html">ImageUtil</A> converter = <FONT ID="New">new</FONT> <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/filesystemmgr/impl/ImageUtil.java.html">ImageUtil</A>();
+<FONT ID="LN">178 </FONT><A NAME="178"></A>
+<FONT ID="LN">179 </FONT><A NAME="179"></A>            <FONT ID="SingleLineComment">// NOTE: For some Siemen's phone, all images have to be less than
+<FONT ID="LN">180 </FONT><A NAME="180"></A></FONT>            <FONT ID="SingleLineComment">// 16K
+<FONT ID="LN">181 </FONT><A NAME="181"></A></FONT>            <FONT ID="SingleLineComment">// May have to check for this, or try to convert to a lesser format
+<FONT ID="LN">182 </FONT><A NAME="182"></A></FONT>            <FONT ID="SingleLineComment">// for display on Siemen's phones (Could put this in an Aspect)
+<FONT ID="LN">183 </FONT><A NAME="183"></A></FONT>
+<FONT ID="LN">184 </FONT><A NAME="184"></A>            <FONT ID="SingleLineComment">// Add Tucan
+<FONT ID="LN">185 </FONT><A NAME="185"></A></FONT>            <FONT ID="Byte">byte</FONT>[] data1 = converter.readImageAsByteArray(path);
+<FONT ID="LN">186 </FONT><A NAME="186"></A>            rid = imageRS.addRecord(data1, <FONT ID="IntegerLiteral">0</FONT>, data1.length);
+<FONT ID="LN">187 </FONT><A NAME="187"></A>            <A HREF="../../../../../../../main/IImageData.java.html">ImageData</A> ii = <FONT ID="New">new</FONT> <A HREF="../../../../../../../main/IImageData.java.html">ImageData</A>(rid, ImageAccessor.ALBUM_LABEL
+<FONT ID="LN">188 </FONT><A NAME="188"></A>                    + albumname, photoname);
+<FONT ID="LN">189 </FONT><A NAME="189"></A>            rid2 = imageInfoRS.getNextRecordID();
+<FONT ID="LN">190 </FONT><A NAME="190"></A>            ii.setRecordId(rid2);
+<FONT ID="LN">191 </FONT><A NAME="191"></A>            data1 = converter.getBytesFromImageInfo(ii);
+<FONT ID="LN">192 </FONT><A NAME="192"></A>            imageInfoRS.addRecord(data1, <FONT ID="IntegerLiteral">0</FONT>, data1.length);
+<FONT ID="LN">193 </FONT><A NAME="193"></A>
+<FONT ID="LN">194 </FONT><A NAME="194"></A>            imageRS.closeRecordStore();
+<FONT ID="LN">195 </FONT><A NAME="195"></A>
+<FONT ID="LN">196 </FONT><A NAME="196"></A>            imageInfoRS.closeRecordStore();
+<FONT ID="LN">197 </FONT><A NAME="197"></A>        } <FONT ID="Catch">catch</FONT> (RecordStoreException e) {
+<FONT ID="LN">198 </FONT><A NAME="198"></A>            <FONT ID="Throw">throw</FONT> <FONT ID="New">new</FONT> <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/filesystemmgr/spec/excep/PersistenceMechanismException.java.html">PersistenceMechanismException</A>( e.getMessage() );
+<FONT ID="LN">199 </FONT><A NAME="199"></A>        }
+<FONT ID="LN">200 </FONT><A NAME="200"></A>    }
+<FONT ID="LN">201 </FONT><A NAME="201"></A>
+<FONT ID="LN">202 </FONT><A NAME="202"></A>    <FONT ID="FormalComment">/**
+<FONT ID="LN">203 </FONT><A NAME="203"></A>     * Define a new photo album for mobile photo users. This creates a new
+<FONT ID="LN">204 </FONT><A NAME="204"></A>     * record store to store photos for the album.
+<FONT ID="LN">205 </FONT><A NAME="205"></A>     * @throws PersistenceMechanismException 
+<FONT ID="LN">206 </FONT><A NAME="206"></A>     * @throws InvalidPhotoAlbumNameException 
+<FONT ID="LN">207 </FONT><A NAME="207"></A>     */</FONT>
+<FONT ID="LN">208 </FONT><A NAME="208"></A>    <FONT ID="Protected">protected</FONT> <FONT ID="Void">void</FONT> createNewPhotoAlbum(String albumName) <FONT ID="Throws">throws</FONT> <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/filesystemmgr/spec/excep/PersistenceMechanismException.java.html">PersistenceMechanismException</A>, <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/filesystemmgr/spec/excep/InvalidPhotoAlbumNameException.java.html">InvalidPhotoAlbumNameException</A> {
+<FONT ID="LN">209 </FONT><A NAME="209"></A>
+<FONT ID="LN">210 </FONT><A NAME="210"></A>        RecordStore newAlbumRS = <FONT ID="Null">null</FONT>;
+<FONT ID="LN">211 </FONT><A NAME="211"></A>        RecordStore newAlbumInfoRS = <FONT ID="Null">null</FONT>;
+<FONT ID="LN">212 </FONT><A NAME="212"></A>        <FONT ID="If">if</FONT>( albumName == <FONT ID="Null">null</FONT>){
+<FONT ID="LN">213 </FONT><A NAME="213"></A>            System.err.println(<FONT ID="StringLiteral">"Error in class "</FONT>+<FONT ID="This">this</FONT>.getClass().getName()+<FONT ID="StringLiteral">"! AlbumName is null"</FONT>);
+<FONT ID="LN">214 </FONT><A NAME="214"></A>            <FONT ID="Return">return</FONT>;
+<FONT ID="LN">215 </FONT><A NAME="215"></A>        }
+<FONT ID="LN">216 </FONT><A NAME="216"></A>        <FONT ID="If">if</FONT> (albumName.equals(<FONT ID="StringLiteral">""</FONT>)){
+<FONT ID="LN">217 </FONT><A NAME="217"></A>            <FONT ID="Throw">throw</FONT> <FONT ID="New">new</FONT> <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/filesystemmgr/spec/excep/InvalidPhotoAlbumNameException.java.html">InvalidPhotoAlbumNameException</A>( <FONT ID="StringLiteral">"Invalid album name!"</FONT> );
+<FONT ID="LN">218 </FONT><A NAME="218"></A>
+<FONT ID="LN">219 </FONT><A NAME="219"></A>        }
+<FONT ID="LN">220 </FONT><A NAME="220"></A>        
+<FONT ID="LN">221 </FONT><A NAME="221"></A>        <FONT ID="SingleLineComment">//check if there is an album with the same name
+<FONT ID="LN">222 </FONT><A NAME="222"></A></FONT>        String[] albumNames  = <FONT ID="This">this</FONT>.getAlbumNames();
+<FONT ID="LN">223 </FONT><A NAME="223"></A>        <FONT ID="For">for</FONT> (<FONT ID="Int">int</FONT> i = <FONT ID="IntegerLiteral">0</FONT>; i &lt; albumNames.length; i++) {
+<FONT ID="LN">224 </FONT><A NAME="224"></A>            <FONT ID="If">if</FONT> (albumNames[i].equals(albumName))
+<FONT ID="LN">225 </FONT><A NAME="225"></A>                <FONT ID="Throw">throw</FONT> <FONT ID="New">new</FONT> <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/filesystemmgr/spec/excep/InvalidPhotoAlbumNameException.java.html">InvalidPhotoAlbumNameException</A>( <FONT ID="StringLiteral">"Invalid album name!"</FONT> );
+<FONT ID="LN">226 </FONT><A NAME="226"></A>        }
+<FONT ID="LN">227 </FONT><A NAME="227"></A>
+<FONT ID="LN">228 </FONT><A NAME="228"></A>        <FONT ID="Try">try</FONT> {
+<FONT ID="LN">229 </FONT><A NAME="229"></A>            newAlbumRS = RecordStore.openRecordStore(ALBUM_LABEL + albumName,<FONT ID="True">true</FONT>);
+<FONT ID="LN">230 </FONT><A NAME="230"></A>            newAlbumInfoRS = RecordStore.openRecordStore(INFO_LABEL + albumName, <FONT ID="True">true</FONT>);
+<FONT ID="LN">231 </FONT><A NAME="231"></A>            newAlbumRS.closeRecordStore();
+<FONT ID="LN">232 </FONT><A NAME="232"></A>            newAlbumInfoRS.closeRecordStore();
+<FONT ID="LN">233 </FONT><A NAME="233"></A>        } <FONT ID="Catch">catch</FONT> (RecordStoreException rse) {
+<FONT ID="LN">234 </FONT><A NAME="234"></A>            <FONT ID="Throw">throw</FONT> <FONT ID="New">new</FONT> <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/filesystemmgr/spec/excep/PersistenceMechanismException.java.html">PersistenceMechanismException</A>(rse);
+<FONT ID="LN">235 </FONT><A NAME="235"></A>        }
+<FONT ID="LN">236 </FONT><A NAME="236"></A>
+<FONT ID="LN">237 </FONT><A NAME="237"></A>    }
+<FONT ID="LN">238 </FONT><A NAME="238"></A>
+<FONT ID="LN">239 </FONT><A NAME="239"></A>    <FONT ID="Protected">protected</FONT> <FONT ID="Void">void</FONT> deletePhotoAlbum(String albumName) <FONT ID="Throws">throws</FONT> <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/filesystemmgr/spec/excep/PersistenceMechanismException.java.html">PersistenceMechanismException</A> {
+<FONT ID="LN">240 </FONT><A NAME="240"></A>
+<FONT ID="LN">241 </FONT><A NAME="241"></A>        <FONT ID="SingleLineComment">//      System.out.println("&lt;* deletePhotoAlbum.ImageAccessor *&gt; albumName = "+albumName);
+<FONT ID="LN">242 </FONT><A NAME="242"></A></FONT>        <FONT ID="SingleLineComment">//      System.out.println("&lt;* deletePhotoAlbum.ImageAccessor *&gt; ALBUM_LABEL + albumName = "+ALBUM_LABEL + albumName);
+<FONT ID="LN">243 </FONT><A NAME="243"></A></FONT>        <FONT ID="Try">try</FONT> {
+<FONT ID="LN">244 </FONT><A NAME="244"></A>            RecordStore.deleteRecordStore(ALBUM_LABEL + albumName);
+<FONT ID="LN">245 </FONT><A NAME="245"></A>            RecordStore.deleteRecordStore(INFO_LABEL + albumName);
+<FONT ID="LN">246 </FONT><A NAME="246"></A>        } <FONT ID="Catch">catch</FONT> (RecordStoreException rse) {
+<FONT ID="LN">247 </FONT><A NAME="247"></A>            <FONT ID="Throw">throw</FONT> <FONT ID="New">new</FONT> <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/filesystemmgr/spec/excep/PersistenceMechanismException.java.html">PersistenceMechanismException</A>(rse);
+<FONT ID="LN">248 </FONT><A NAME="248"></A>        }
+<FONT ID="LN">249 </FONT><A NAME="249"></A>
+<FONT ID="LN">250 </FONT><A NAME="250"></A>    }
+<FONT ID="LN">251 </FONT><A NAME="251"></A>
+<FONT ID="LN">252 </FONT><A NAME="252"></A>    <FONT ID="FormalComment">/**
+<FONT ID="LN">253 </FONT><A NAME="253"></A>     * Delete a single (specified) image from the (specified) record store. This
+<FONT ID="LN">254 </FONT><A NAME="254"></A>     * will permanently delete the image data and metadata from the device.
+<FONT ID="LN">255 </FONT><A NAME="255"></A>     * @throws PersistenceMechanismException 
+<FONT ID="LN">256 </FONT><A NAME="256"></A>     * @throws NullAlbumDataReference 
+<FONT ID="LN">257 </FONT><A NAME="257"></A>     * @throws ImageNotFoundException 
+<FONT ID="LN">258 </FONT><A NAME="258"></A>     */</FONT>
+<FONT ID="LN">259 </FONT><A NAME="259"></A>    <FONT ID="Protected">protected</FONT> <FONT ID="Boolean">boolean</FONT> deleteSingleImageFromRMS(String storeName, String imageName) <FONT ID="Throws">throws</FONT> <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/filesystemmgr/spec/excep/PersistenceMechanismException.java.html">PersistenceMechanismException</A>, <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/filesystemmgr/spec/excep/ImageNotFoundException.java.html">ImageNotFoundException</A>, <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/filesystemmgr/spec/excep/NullAlbumDataReference.java.html">NullAlbumDataReference</A> {
+<FONT ID="LN">260 </FONT><A NAME="260"></A>
+<FONT ID="LN">261 </FONT><A NAME="261"></A>        <FONT ID="Boolean">boolean</FONT> success = <FONT ID="False">false</FONT>;
+<FONT ID="LN">262 </FONT><A NAME="262"></A>
+<FONT ID="LN">263 </FONT><A NAME="263"></A>        <FONT ID="SingleLineComment">// Open the record stores containing the byte data and the meta data
+<FONT ID="LN">264 </FONT><A NAME="264"></A></FONT>        <FONT ID="SingleLineComment">// (info)
+<FONT ID="LN">265 </FONT><A NAME="265"></A></FONT>        <FONT ID="Try">try</FONT> {
+<FONT ID="LN">266 </FONT><A NAME="266"></A>
+<FONT ID="LN">267 </FONT><A NAME="267"></A>            System.out.println(<FONT ID="StringLiteral">"Delete: "</FONT> + storeName+<FONT ID="StringLiteral">" : "</FONT>+ imageName);
+<FONT ID="LN">268 </FONT><A NAME="268"></A>            
+<FONT ID="LN">269 </FONT><A NAME="269"></A>            <FONT ID="SingleLineComment">// Verify storeName is name without pre-fix
+<FONT ID="LN">270 </FONT><A NAME="270"></A></FONT>            imageRS = RecordStore.openRecordStore(ALBUM_LABEL + storeName, <FONT ID="True">true</FONT>);
+<FONT ID="LN">271 </FONT><A NAME="271"></A>            imageInfoRS = RecordStore.openRecordStore(INFO_LABEL + storeName,<FONT ID="True">true</FONT>);
+<FONT ID="LN">272 </FONT><A NAME="272"></A>
+<FONT ID="LN">273 </FONT><A NAME="273"></A>            <A HREF="../../../../../../../main/IImageData.java.html">IImageData</A> imageData = getImageInfo(imageName);
+<FONT ID="LN">274 </FONT><A NAME="274"></A>            <FONT ID="Int">int</FONT> rid = imageData.getForeignRecordId();
+<FONT ID="LN">275 </FONT><A NAME="275"></A>
+<FONT ID="LN">276 </FONT><A NAME="276"></A>            imageRS.deleteRecord(rid);
+<FONT ID="LN">277 </FONT><A NAME="277"></A>            imageInfoRS.deleteRecord(rid);
+<FONT ID="LN">278 </FONT><A NAME="278"></A>
+<FONT ID="LN">279 </FONT><A NAME="279"></A>            imageRS.closeRecordStore();
+<FONT ID="LN">280 </FONT><A NAME="280"></A>            imageInfoRS.closeRecordStore();
+<FONT ID="LN">281 </FONT><A NAME="281"></A>
+<FONT ID="LN">282 </FONT><A NAME="282"></A>        } <FONT ID="Catch">catch</FONT> (RecordStoreException rse) {
+<FONT ID="LN">283 </FONT><A NAME="283"></A>            rse.printStackTrace();
+<FONT ID="LN">284 </FONT><A NAME="284"></A>            <FONT ID="Throw">throw</FONT> <FONT ID="New">new</FONT> <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/filesystemmgr/spec/excep/PersistenceMechanismException.java.html">PersistenceMechanismException</A>(rse);
+<FONT ID="LN">285 </FONT><A NAME="285"></A>        }
+<FONT ID="LN">286 </FONT><A NAME="286"></A>
+<FONT ID="LN">287 </FONT><A NAME="287"></A>        <FONT ID="SingleLineComment">// TODO: It's not clear from the API whether the record store needs to
+<FONT ID="LN">288 </FONT><A NAME="288"></A></FONT>        <FONT ID="SingleLineComment">// be closed or not...
+<FONT ID="LN">289 </FONT><A NAME="289"></A></FONT>
+<FONT ID="LN">290 </FONT><A NAME="290"></A>        <FONT ID="Return">return</FONT> success;
+<FONT ID="LN">291 </FONT><A NAME="291"></A>    }
+<FONT ID="LN">292 </FONT><A NAME="292"></A>
+<FONT ID="LN">293 </FONT><A NAME="293"></A>    <FONT ID="Private">private</FONT> <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/filesystemmgr/impl/AlbumData.java.html">AlbumData</A> getAlbumData() {
+<FONT ID="LN">294 </FONT><A NAME="294"></A>        <FONT ID="Return">return</FONT> albumData;
+<FONT ID="LN">295 </FONT><A NAME="295"></A>    }
+<FONT ID="LN">296 </FONT><A NAME="296"></A>
+<FONT ID="LN">297 </FONT><A NAME="297"></A>    <FONT ID="FormalComment">/**
+<FONT ID="LN">298 </FONT><A NAME="298"></A>     * Get the list of photo album names currently loaded.
+<FONT ID="LN">299 </FONT><A NAME="299"></A>     * 
+<FONT ID="LN">300 </FONT><A NAME="300"></A>     * @return Returns the albumNames.
+<FONT ID="LN">301 </FONT><A NAME="301"></A>     */</FONT>
+<FONT ID="LN">302 </FONT><A NAME="302"></A>    <FONT ID="Protected">protected</FONT> String[] getAlbumNames() {
+<FONT ID="LN">303 </FONT><A NAME="303"></A>        
+<FONT ID="LN">304 </FONT><A NAME="304"></A>        <FONT ID="Return">return</FONT> albumNames;
+<FONT ID="LN">305 </FONT><A NAME="305"></A>        
+<FONT ID="LN">306 </FONT><A NAME="306"></A>    }
+<FONT ID="LN">307 </FONT><A NAME="307"></A>
+<FONT ID="LN">308 </FONT><A NAME="308"></A>    <FONT ID="Private">private</FONT> <FONT ID="Void">void</FONT> setAlbumNames(String[] albumNames) {
+<FONT ID="LN">309 </FONT><A NAME="309"></A>        <FONT ID="This">this</FONT>.albumNames = albumNames;
+<FONT ID="LN">310 </FONT><A NAME="310"></A>    }
+<FONT ID="LN">311 </FONT><A NAME="311"></A>
+<FONT ID="LN">312 </FONT><A NAME="312"></A>    <FONT ID="FormalComment">/**
+<FONT ID="LN">313 </FONT><A NAME="313"></A>     * Retrieve the metadata associated with a specified image (by name)
+<FONT ID="LN">314 </FONT><A NAME="314"></A>     * @throws ImageNotFoundException 
+<FONT ID="LN">315 </FONT><A NAME="315"></A>     * @throws NullAlbumDataReference 
+<FONT ID="LN">316 </FONT><A NAME="316"></A>     */</FONT>
+<FONT ID="LN">317 </FONT><A NAME="317"></A>    <FONT ID="Protected">protected</FONT> <A HREF="../../../../../../../main/IImageData.java.html">IImageData</A> getImageInfo(String imageName) <FONT ID="Throws">throws</FONT> <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/filesystemmgr/spec/excep/ImageNotFoundException.java.html">ImageNotFoundException</A>, <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/filesystemmgr/spec/excep/NullAlbumDataReference.java.html">NullAlbumDataReference</A> {
+<FONT ID="LN">318 </FONT><A NAME="318"></A>        <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/filesystemmgr/impl/AlbumData.java.html">AlbumData</A> albumData = <FONT ID="This">this</FONT>.getAlbumData();
+<FONT ID="LN">319 </FONT><A NAME="319"></A>        <FONT ID="If">if</FONT> (albumData == <FONT ID="Null">null</FONT>)
+<FONT ID="LN">320 </FONT><A NAME="320"></A>            <FONT ID="Throw">throw</FONT> <FONT ID="New">new</FONT> <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/filesystemmgr/spec/excep/NullAlbumDataReference.java.html">NullAlbumDataReference</A>(<FONT ID="StringLiteral">"Null reference to the Album data"</FONT>);
+<FONT ID="LN">321 </FONT><A NAME="321"></A>
+<FONT ID="LN">322 </FONT><A NAME="322"></A>        
+<FONT ID="LN">323 </FONT><A NAME="323"></A>        <A HREF="../../../../../../../main/IImageData.java.html">IImageData</A> ii = (<A HREF="../../../../../../../main/IImageData.java.html">IImageData</A>) albumData.getImageInfoTable().get(imageName);
+<FONT ID="LN">324 </FONT><A NAME="324"></A>        
+<FONT ID="LN">325 </FONT><A NAME="325"></A>        <FONT ID="If">if</FONT> (ii == <FONT ID="Null">null</FONT>){
+<FONT ID="LN">326 </FONT><A NAME="326"></A>            System.out.println(<FONT ID="StringLiteral">"----Image is null!----"</FONT>);
+<FONT ID="LN">327 </FONT><A NAME="327"></A>            <FONT ID="Throw">throw</FONT> <FONT ID="New">new</FONT> <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/filesystemmgr/spec/excep/ImageNotFoundException.java.html">ImageNotFoundException</A>(imageName +<FONT ID="StringLiteral">" was NULL in ImageAccessor Hashtable."</FONT>);
+<FONT ID="LN">328 </FONT><A NAME="328"></A>        }<FONT ID="Else">else</FONT>{
+<FONT ID="LN">329 </FONT><A NAME="329"></A>            System.out.println(<FONT ID="StringLiteral">"----Image is not null!----"</FONT>);
+<FONT ID="LN">330 </FONT><A NAME="330"></A>        }
+<FONT ID="LN">331 </FONT><A NAME="331"></A>
+<FONT ID="LN">332 </FONT><A NAME="332"></A>        <FONT ID="Return">return</FONT> ii;
+<FONT ID="LN">333 </FONT><A NAME="333"></A>
+<FONT ID="LN">334 </FONT><A NAME="334"></A>    }
+<FONT ID="LN">335 </FONT><A NAME="335"></A>
+<FONT ID="LN">336 </FONT><A NAME="336"></A>    <FONT ID="FormalComment">/**
+<FONT ID="LN">337 </FONT><A NAME="337"></A>     * Load all existing photo albums that are defined in the record store.
+<FONT ID="LN">338 </FONT><A NAME="338"></A>     * 
+<FONT ID="LN">339 </FONT><A NAME="339"></A>     * @throws InvalidImageDataException
+<FONT ID="LN">340 </FONT><A NAME="340"></A>     * @throws PersistenceMechanismException
+<FONT ID="LN">341 </FONT><A NAME="341"></A>     */</FONT>
+<FONT ID="LN">342 </FONT><A NAME="342"></A>    <FONT ID="Protected">protected</FONT> <FONT ID="Void">void</FONT> loadAlbums() <FONT ID="Throws">throws</FONT> <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/filesystemmgr/spec/excep/InvalidImageDataException.java.html">InvalidImageDataException</A>,
+<FONT ID="LN">343 </FONT><A NAME="343"></A>    <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/filesystemmgr/spec/excep/PersistenceMechanismException.java.html">PersistenceMechanismException</A> {
+<FONT ID="LN">344 </FONT><A NAME="344"></A>            
+<FONT ID="LN">345 </FONT><A NAME="345"></A>        
+<FONT ID="LN">346 </FONT><A NAME="346"></A>        
+<FONT ID="LN">347 </FONT><A NAME="347"></A>        <FONT ID="SingleLineComment">// Try to find any existing Albums (record stores)
+<FONT ID="LN">348 </FONT><A NAME="348"></A></FONT>
+<FONT ID="LN">349 </FONT><A NAME="349"></A>        String[] currentStores = RecordStore.listRecordStores();
+<FONT ID="LN">350 </FONT><A NAME="350"></A>
+<FONT ID="LN">351 </FONT><A NAME="351"></A>        <FONT ID="If">if</FONT> (currentStores != <FONT ID="Null">null</FONT>) {
+<FONT ID="LN">352 </FONT><A NAME="352"></A>            System.out.println(<FONT ID="StringLiteral">"ImageAccessor::loadAlbums: Found: "</FONT>
+<FONT ID="LN">353 </FONT><A NAME="353"></A>                    + currentStores.length + <FONT ID="StringLiteral">" existing record stores"</FONT>);
+<FONT ID="LN">354 </FONT><A NAME="354"></A>            <FONT ID="SingleLineComment">//AlbumData albumData = this.getAlbumData();
+<FONT ID="LN">355 </FONT><A NAME="355"></A></FONT>        
+<FONT ID="LN">356 </FONT><A NAME="356"></A>            albumData.existingRecords = <FONT ID="True">true</FONT>;
+<FONT ID="LN">357 </FONT><A NAME="357"></A>            String[] temp = <FONT ID="New">new</FONT> String[currentStores.length];
+<FONT ID="LN">358 </FONT><A NAME="358"></A>            <FONT ID="Int">int</FONT> count = <FONT ID="IntegerLiteral">0</FONT>;
+<FONT ID="LN">359 </FONT><A NAME="359"></A>
+<FONT ID="LN">360 </FONT><A NAME="360"></A>            <FONT ID="SingleLineComment">// Only use record stores that follow the naming convention defined
+<FONT ID="LN">361 </FONT><A NAME="361"></A></FONT>            <FONT ID="For">for</FONT> (<FONT ID="Int">int</FONT> i = <FONT ID="IntegerLiteral">0</FONT>; i &lt; currentStores.length; i++) {
+<FONT ID="LN">362 </FONT><A NAME="362"></A>                String curr = currentStores[i];
+<FONT ID="LN">363 </FONT><A NAME="363"></A>        
+<FONT ID="LN">364 </FONT><A NAME="364"></A>                <FONT ID="SingleLineComment">// If this record store is a photo album...
+<FONT ID="LN">365 </FONT><A NAME="365"></A></FONT>                <FONT ID="If">if</FONT> (curr.startsWith(ALBUM_LABEL)) {
+<FONT ID="LN">366 </FONT><A NAME="366"></A>
+<FONT ID="LN">367 </FONT><A NAME="367"></A>                    <FONT ID="SingleLineComment">// Strip out the mpa- identifier
+<FONT ID="LN">368 </FONT><A NAME="368"></A></FONT>                    curr = curr.substring(<FONT ID="IntegerLiteral">4</FONT>);
+<FONT ID="LN">369 </FONT><A NAME="369"></A>                    <FONT ID="SingleLineComment">// Add the album name to the array
+<FONT ID="LN">370 </FONT><A NAME="370"></A></FONT>                    temp[i] = curr;
+<FONT ID="LN">371 </FONT><A NAME="371"></A>                    count++;
+<FONT ID="LN">372 </FONT><A NAME="372"></A>        
+<FONT ID="LN">373 </FONT><A NAME="373"></A>                }
+<FONT ID="LN">374 </FONT><A NAME="374"></A>            }
+<FONT ID="LN">375 </FONT><A NAME="375"></A>
+<FONT ID="LN">376 </FONT><A NAME="376"></A>            <FONT ID="SingleLineComment">// Re-copy the contents into a smaller array now that we know the
+<FONT ID="LN">377 </FONT><A NAME="377"></A></FONT>            <FONT ID="SingleLineComment">// size
+<FONT ID="LN">378 </FONT><A NAME="378"></A></FONT>            String[] albumNames = <FONT ID="New">new</FONT> String[count];
+<FONT ID="LN">379 </FONT><A NAME="379"></A>            <FONT ID="Int">int</FONT> count2 = <FONT ID="IntegerLiteral">0</FONT>;
+<FONT ID="LN">380 </FONT><A NAME="380"></A>            <FONT ID="For">for</FONT> (<FONT ID="Int">int</FONT> i = <FONT ID="IntegerLiteral">0</FONT>; i &lt; temp.length; i++) {
+<FONT ID="LN">381 </FONT><A NAME="381"></A>                <FONT ID="If">if</FONT> (temp[i] != <FONT ID="Null">null</FONT>) {
+<FONT ID="LN">382 </FONT><A NAME="382"></A>                    albumNames[count2] = temp[i];
+<FONT ID="LN">383 </FONT><A NAME="383"></A>                    count2++;
+<FONT ID="LN">384 </FONT><A NAME="384"></A>                }
+<FONT ID="LN">385 </FONT><A NAME="385"></A>                
+<FONT ID="LN">386 </FONT><A NAME="386"></A>            }
+<FONT ID="LN">387 </FONT><A NAME="387"></A>            <FONT ID="This">this</FONT>.setAlbumNames( albumNames );
+<FONT ID="LN">388 </FONT><A NAME="388"></A>            
+<FONT ID="LN">389 </FONT><A NAME="389"></A>        } <FONT ID="Else">else</FONT> {
+<FONT ID="LN">390 </FONT><A NAME="390"></A>            resetImageRecordStore();
+<FONT ID="LN">391 </FONT><A NAME="391"></A>            loadAlbums();
+<FONT ID="LN">392 </FONT><A NAME="392"></A>        }
+<FONT ID="LN">393 </FONT><A NAME="393"></A>    
+<FONT ID="LN">394 </FONT><A NAME="394"></A>    }
+<FONT ID="LN">395 </FONT><A NAME="395"></A>
+<FONT ID="LN">396 </FONT><A NAME="396"></A>    <FONT ID="FormalComment">/**
+<FONT ID="LN">397 </FONT><A NAME="397"></A>     * Get the data for an Image as a byte array. This is useful for sending
+<FONT ID="LN">398 </FONT><A NAME="398"></A>     * images via SMS or HTTP
+<FONT ID="LN">399 </FONT><A NAME="399"></A>     * @throws PersistenceMechanismException 
+<FONT ID="LN">400 </FONT><A NAME="400"></A>     */</FONT>
+<FONT ID="LN">401 </FONT><A NAME="401"></A>    <FONT ID="Protected">protected</FONT> <FONT ID="Byte">byte</FONT>[] loadImageBytesFromRMS(String recordName, String imageName,
+<FONT ID="LN">402 </FONT><A NAME="402"></A>            <FONT ID="Int">int</FONT> recordId) <FONT ID="Throws">throws</FONT> <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/filesystemmgr/spec/excep/PersistenceMechanismException.java.html">PersistenceMechanismException</A> {
+<FONT ID="LN">403 </FONT><A NAME="403"></A>
+<FONT ID="LN">404 </FONT><A NAME="404"></A>        <FONT ID="Byte">byte</FONT>[] imageData = <FONT ID="Null">null</FONT>;
+<FONT ID="LN">405 </FONT><A NAME="405"></A>
+<FONT ID="LN">406 </FONT><A NAME="406"></A>        <FONT ID="Try">try</FONT> {
+<FONT ID="LN">407 </FONT><A NAME="407"></A>
+<FONT ID="LN">408 </FONT><A NAME="408"></A>            RecordStore albumStore = RecordStore.openRecordStore(recordName,
+<FONT ID="LN">409 </FONT><A NAME="409"></A>                    <FONT ID="False">false</FONT>);
+<FONT ID="LN">410 </FONT><A NAME="410"></A>            imageData = albumStore.getRecord(recordId);
+<FONT ID="LN">411 </FONT><A NAME="411"></A>            albumStore.closeRecordStore();
+<FONT ID="LN">412 </FONT><A NAME="412"></A>
+<FONT ID="LN">413 </FONT><A NAME="413"></A>        } <FONT ID="Catch">catch</FONT> (RecordStoreException rse) {
+<FONT ID="LN">414 </FONT><A NAME="414"></A>            <FONT ID="Throw">throw</FONT> <FONT ID="New">new</FONT> <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/filesystemmgr/spec/excep/PersistenceMechanismException.java.html">PersistenceMechanismException</A>(rse);
+<FONT ID="LN">415 </FONT><A NAME="415"></A>        }
+<FONT ID="LN">416 </FONT><A NAME="416"></A>
+<FONT ID="LN">417 </FONT><A NAME="417"></A>        <FONT ID="Return">return</FONT> imageData;
+<FONT ID="LN">418 </FONT><A NAME="418"></A>    }
+<FONT ID="LN">419 </FONT><A NAME="419"></A>
+<FONT ID="LN">420 </FONT><A NAME="420"></A>    <FONT ID="FormalComment">/**
+<FONT ID="LN">421 </FONT><A NAME="421"></A>     * This will populate the imageInfo hashtable with the ImageInfo object,
+<FONT ID="LN">422 </FONT><A NAME="422"></A>     * referenced by label name and populate the imageTable hashtable with Image
+<FONT ID="LN">423 </FONT><A NAME="423"></A>     * objects referenced by the RMS record Id
+<FONT ID="LN">424 </FONT><A NAME="424"></A>     * 
+<FONT ID="LN">425 </FONT><A NAME="425"></A>     * @throws PersistenceMechanismException
+<FONT ID="LN">426 </FONT><A NAME="426"></A>     */</FONT>
+<FONT ID="LN">427 </FONT><A NAME="427"></A>    <FONT ID="Protected">protected</FONT> <A HREF="../../../../../../../main/IImageData.java.html">ImageData</A>[] loadImageDataFromRMS(String recordName)
+<FONT ID="LN">428 </FONT><A NAME="428"></A>    <FONT ID="Throws">throws</FONT> <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/filesystemmgr/spec/excep/PersistenceMechanismException.java.html">PersistenceMechanismException</A>, <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/filesystemmgr/spec/excep/InvalidImageDataException.java.html">InvalidImageDataException</A> {
+<FONT ID="LN">429 </FONT><A NAME="429"></A>
+<FONT ID="LN">430 </FONT><A NAME="430"></A>        Vector imagesVector = <FONT ID="New">new</FONT> Vector();
+<FONT ID="LN">431 </FONT><A NAME="431"></A>
+<FONT ID="LN">432 </FONT><A NAME="432"></A>        <FONT ID="Try">try</FONT> {
+<FONT ID="LN">433 </FONT><A NAME="433"></A>
+<FONT ID="LN">434 </FONT><A NAME="434"></A>            <FONT ID="SingleLineComment">// [EF] not used            String storeName = ImageAccessor.ALBUM_LABEL + recordName;
+<FONT ID="LN">435 </FONT><A NAME="435"></A></FONT>            String infoStoreName = ImageAccessor.INFO_LABEL + recordName;
+<FONT ID="LN">436 </FONT><A NAME="436"></A>
+<FONT ID="LN">437 </FONT><A NAME="437"></A>            RecordStore infoStore = RecordStore.openRecordStore(infoStoreName,
+<FONT ID="LN">438 </FONT><A NAME="438"></A>                    <FONT ID="False">false</FONT>);
+<FONT ID="LN">439 </FONT><A NAME="439"></A>            RecordEnumeration isEnum = infoStore.enumerateRecords(<FONT ID="Null">null</FONT>, <FONT ID="Null">null</FONT>,
+<FONT ID="LN">440 </FONT><A NAME="440"></A>                    <FONT ID="False">false</FONT>);
+<FONT ID="LN">441 </FONT><A NAME="441"></A>
+<FONT ID="LN">442 </FONT><A NAME="442"></A>            <FONT ID="While">while</FONT> (isEnum.hasNextElement()) {
+<FONT ID="LN">443 </FONT><A NAME="443"></A>                <FONT ID="SingleLineComment">// Get next record
+<FONT ID="LN">444 </FONT><A NAME="444"></A></FONT>                <FONT ID="Int">int</FONT> currentId = isEnum.nextRecordId();
+<FONT ID="LN">445 </FONT><A NAME="445"></A>                <FONT ID="Byte">byte</FONT>[] data = infoStore.getRecord(currentId);
+<FONT ID="LN">446 </FONT><A NAME="446"></A>
+<FONT ID="LN">447 </FONT><A NAME="447"></A>                <FONT ID="SingleLineComment">// Convert the data from a byte array into our ImageData
+<FONT ID="LN">448 </FONT><A NAME="448"></A></FONT>                <FONT ID="SingleLineComment">// (metadata) object
+<FONT ID="LN">449 </FONT><A NAME="449"></A></FONT>                <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/filesystemmgr/impl/ImageUtil.java.html">ImageUtil</A> converter = <FONT ID="New">new</FONT> <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/filesystemmgr/impl/ImageUtil.java.html">ImageUtil</A>();
+<FONT ID="LN">450 </FONT><A NAME="450"></A>                <A HREF="../../../../../../../main/IImageData.java.html">ImageData</A> iiObject = converter.getImageInfoFromBytes(data);
+<FONT ID="LN">451 </FONT><A NAME="451"></A>
+<FONT ID="LN">452 </FONT><A NAME="452"></A>                <FONT ID="SingleLineComment">//              System.out.println("&lt;* ImageAccessor.loadImageDataFromRMS *&gt; iiObject = "+iiObject.getImageLabel());
+<FONT ID="LN">453 </FONT><A NAME="453"></A></FONT>
+<FONT ID="LN">454 </FONT><A NAME="454"></A>                <FONT ID="SingleLineComment">// Add the info to the metadata hashtable
+<FONT ID="LN">455 </FONT><A NAME="455"></A></FONT>                String label = iiObject.getImageLabel();
+<FONT ID="LN">456 </FONT><A NAME="456"></A>                imagesVector.addElement(iiObject);
+<FONT ID="LN">457 </FONT><A NAME="457"></A>                <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/filesystemmgr/impl/AlbumData.java.html">AlbumData</A> albumData = <FONT ID="This">this</FONT>.getAlbumData();
+<FONT ID="LN">458 </FONT><A NAME="458"></A>                albumData.getImageInfoTable().put(label, iiObject);
+<FONT ID="LN">459 </FONT><A NAME="459"></A>
+<FONT ID="LN">460 </FONT><A NAME="460"></A>            }
+<FONT ID="LN">461 </FONT><A NAME="461"></A>
+<FONT ID="LN">462 </FONT><A NAME="462"></A>            infoStore.closeRecordStore();
+<FONT ID="LN">463 </FONT><A NAME="463"></A>
+<FONT ID="LN">464 </FONT><A NAME="464"></A>        }<FONT ID="Catch">catch</FONT> (RecordStoreException rse) {
+<FONT ID="LN">465 </FONT><A NAME="465"></A>            <FONT ID="Throw">throw</FONT> <FONT ID="New">new</FONT> <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/filesystemmgr/spec/excep/PersistenceMechanismException.java.html">PersistenceMechanismException</A>(rse);
+<FONT ID="LN">466 </FONT><A NAME="466"></A>        }
+<FONT ID="LN">467 </FONT><A NAME="467"></A>
+<FONT ID="LN">468 </FONT><A NAME="468"></A>        <FONT ID="SingleLineComment">// Re-copy the contents into a smaller array
+<FONT ID="LN">469 </FONT><A NAME="469"></A></FONT>        <A HREF="../../../../../../../main/IImageData.java.html">ImageData</A>[] labelArray = <FONT ID="New">new</FONT> <A HREF="../../../../../../../main/IImageData.java.html">ImageData</A>[imagesVector.size()];
+<FONT ID="LN">470 </FONT><A NAME="470"></A>        imagesVector.copyInto(labelArray);
+<FONT ID="LN">471 </FONT><A NAME="471"></A>        
+<FONT ID="LN">472 </FONT><A NAME="472"></A>        <FONT ID="Return">return</FONT> labelArray;
+<FONT ID="LN">473 </FONT><A NAME="473"></A>    }
+<FONT ID="LN">474 </FONT><A NAME="474"></A>
+<FONT ID="LN">475 </FONT><A NAME="475"></A>    <FONT ID="FormalComment">/**
+<FONT ID="LN">476 </FONT><A NAME="476"></A>     * Fetch a single image from the Record Store This should be used for
+<FONT ID="LN">477 </FONT><A NAME="477"></A>     * loading images on-demand (only when they are viewed or sent via SMS etc.)
+<FONT ID="LN">478 </FONT><A NAME="478"></A>     * to reduce startup time by loading them all at once.
+<FONT ID="LN">479 </FONT><A NAME="479"></A>     * @throws PersistenceMechanismException 
+<FONT ID="LN">480 </FONT><A NAME="480"></A>     */</FONT>
+<FONT ID="LN">481 </FONT><A NAME="481"></A>    <FONT ID="Protected">protected</FONT> Image loadSingleImageFromRMS(String recordName, String imageName,
+<FONT ID="LN">482 </FONT><A NAME="482"></A>            <FONT ID="Int">int</FONT> recordId) <FONT ID="Throws">throws</FONT> <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/filesystemmgr/spec/excep/PersistenceMechanismException.java.html">PersistenceMechanismException</A> {
+<FONT ID="LN">483 </FONT><A NAME="483"></A>
+<FONT ID="LN">484 </FONT><A NAME="484"></A>        Image img = <FONT ID="Null">null</FONT>;
+<FONT ID="LN">485 </FONT><A NAME="485"></A>        <FONT ID="Byte">byte</FONT>[] imageData = loadImageBytesFromRMS(recordName, imageName,
+<FONT ID="LN">486 </FONT><A NAME="486"></A>                recordId);
+<FONT ID="LN">487 </FONT><A NAME="487"></A>        
+<FONT ID="LN">488 </FONT><A NAME="488"></A>        img = Image.createImage(imageData, <FONT ID="IntegerLiteral">0</FONT>, imageData.length);
+<FONT ID="LN">489 </FONT><A NAME="489"></A>        <FONT ID="Return">return</FONT> img;
+<FONT ID="LN">490 </FONT><A NAME="490"></A>    }
+<FONT ID="LN">491 </FONT><A NAME="491"></A>
+<FONT ID="LN">492 </FONT><A NAME="492"></A>    <FONT ID="FormalComment">/**
+<FONT ID="LN">493 </FONT><A NAME="493"></A>     * Reset the album data for MobileMedia. This will delete all existing photo
+<FONT ID="LN">494 </FONT><A NAME="494"></A>     * data from the record store and re-create the default album and photos.
+<FONT ID="LN">495 </FONT><A NAME="495"></A>     * 
+<FONT ID="LN">496 </FONT><A NAME="496"></A>     * @throws InvalidImageFormatException
+<FONT ID="LN">497 </FONT><A NAME="497"></A>     * @throws ImagePathNotValidException
+<FONT ID="LN">498 </FONT><A NAME="498"></A>     * @throws InvalidImageDataException
+<FONT ID="LN">499 </FONT><A NAME="499"></A>     * @throws PersistenceMechanismException
+<FONT ID="LN">500 </FONT><A NAME="500"></A>     */</FONT>
+<FONT ID="LN">501 </FONT><A NAME="501"></A>    <FONT ID="Protected">protected</FONT> <FONT ID="Void">void</FONT> resetImageRecordStore() <FONT ID="Throws">throws</FONT> <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/filesystemmgr/spec/excep/InvalidImageDataException.java.html">InvalidImageDataException</A>,
+<FONT ID="LN">502 </FONT><A NAME="502"></A>    <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/filesystemmgr/spec/excep/PersistenceMechanismException.java.html">PersistenceMechanismException</A> {
+<FONT ID="LN">503 </FONT><A NAME="503"></A>
+<FONT ID="LN">504 </FONT><A NAME="504"></A>        String storeName = <FONT ID="Null">null</FONT>;
+<FONT ID="LN">505 </FONT><A NAME="505"></A>        String infoStoreName = <FONT ID="Null">null</FONT>;
+<FONT ID="LN">506 </FONT><A NAME="506"></A>        
+<FONT ID="LN">507 </FONT><A NAME="507"></A>        String[] albumNames = <FONT ID="This">this</FONT>.getAlbumNames();
+<FONT ID="LN">508 </FONT><A NAME="508"></A>        <FONT ID="SingleLineComment">// remove any existing album stores...
+<FONT ID="LN">509 </FONT><A NAME="509"></A></FONT>        <FONT ID="If">if</FONT> (albumNames != <FONT ID="Null">null</FONT>) {
+<FONT ID="LN">510 </FONT><A NAME="510"></A>            <FONT ID="For">for</FONT> (<FONT ID="Int">int</FONT> i = <FONT ID="IntegerLiteral">0</FONT>; i &lt; albumNames.length; i++) {
+<FONT ID="LN">511 </FONT><A NAME="511"></A>                <FONT ID="Try">try</FONT> {
+<FONT ID="LN">512 </FONT><A NAME="512"></A>                    <FONT ID="SingleLineComment">// Delete all existing stores containing Image objects as
+<FONT ID="LN">513 </FONT><A NAME="513"></A></FONT>                    <FONT ID="SingleLineComment">// well as the associated ImageInfo objects
+<FONT ID="LN">514 </FONT><A NAME="514"></A></FONT>                    <FONT ID="SingleLineComment">// Add the prefixes labels to the info store
+<FONT ID="LN">515 </FONT><A NAME="515"></A></FONT>
+<FONT ID="LN">516 </FONT><A NAME="516"></A>                    storeName = ALBUM_LABEL + albumNames[i];
+<FONT ID="LN">517 </FONT><A NAME="517"></A>                    infoStoreName = INFO_LABEL + albumNames[i];
+<FONT ID="LN">518 </FONT><A NAME="518"></A>
+<FONT ID="LN">519 </FONT><A NAME="519"></A>                    RecordStore.deleteRecordStore(storeName);
+<FONT ID="LN">520 </FONT><A NAME="520"></A>                    RecordStore.deleteRecordStore(infoStoreName);
+<FONT ID="LN">521 </FONT><A NAME="521"></A>
+<FONT ID="LN">522 </FONT><A NAME="522"></A>                } <FONT ID="Catch">catch</FONT> (RecordStoreException e) {
+<FONT ID="LN">523 </FONT><A NAME="523"></A>                    System.out.println(<FONT ID="StringLiteral">"No record store named "</FONT> + storeName
+<FONT ID="LN">524 </FONT><A NAME="524"></A>                            + <FONT ID="StringLiteral">" to delete."</FONT>);
+<FONT ID="LN">525 </FONT><A NAME="525"></A>                    System.out.println(<FONT ID="StringLiteral">"...or...No record store named "</FONT>
+<FONT ID="LN">526 </FONT><A NAME="526"></A>                            + infoStoreName + <FONT ID="StringLiteral">" to delete."</FONT>);
+<FONT ID="LN">527 </FONT><A NAME="527"></A>                    System.out.println(<FONT ID="StringLiteral">"Ignoring Exception: "</FONT> + e);
+<FONT ID="LN">528 </FONT><A NAME="528"></A>                    <FONT ID="SingleLineComment">// ignore any errors...
+<FONT ID="LN">529 </FONT><A NAME="529"></A></FONT>                }
+<FONT ID="LN">530 </FONT><A NAME="530"></A>            }
+<FONT ID="LN">531 </FONT><A NAME="531"></A>        } <FONT ID="Else">else</FONT> {
+<FONT ID="LN">532 </FONT><A NAME="532"></A>            <FONT ID="SingleLineComment">// Do nothing for now
+<FONT ID="LN">533 </FONT><A NAME="533"></A></FONT>            System.out.println(<FONT ID="StringLiteral">"ImageAccessor::resetImageRecordStore: albumNames array was null. Nothing to delete."</FONT>);
+<FONT ID="LN">534 </FONT><A NAME="534"></A>        }
+<FONT ID="LN">535 </FONT><A NAME="535"></A>
+<FONT ID="LN">536 </FONT><A NAME="536"></A>        <FONT ID="SingleLineComment">// Now, create a new default album for testing
+<FONT ID="LN">537 </FONT><A NAME="537"></A></FONT>        addImageData(<FONT ID="StringLiteral">"Tucan Sam"</FONT>, <FONT ID="StringLiteral">"/images/Tucan.png"</FONT>,
+<FONT ID="LN">538 </FONT><A NAME="538"></A>                ImageAccessor.DEFAULT_ALBUM_NAME);
+<FONT ID="LN">539 </FONT><A NAME="539"></A>        <FONT ID="SingleLineComment">// Add Penguin
+<FONT ID="LN">540 </FONT><A NAME="540"></A></FONT>        addImageData(<FONT ID="StringLiteral">"Linux Penguin"</FONT>, <FONT ID="StringLiteral">"/images/Penguin.png"</FONT>,
+<FONT ID="LN">541 </FONT><A NAME="541"></A>                ImageAccessor.DEFAULT_ALBUM_NAME);
+<FONT ID="LN">542 </FONT><A NAME="542"></A>        <FONT ID="SingleLineComment">// Add Duke
+<FONT ID="LN">543 </FONT><A NAME="543"></A></FONT>        addImageData(<FONT ID="StringLiteral">"Duke (Sun)"</FONT>, <FONT ID="StringLiteral">"/images/Duke1.PNG"</FONT>,
+<FONT ID="LN">544 </FONT><A NAME="544"></A>                ImageAccessor.DEFAULT_ALBUM_NAME);
+<FONT ID="LN">545 </FONT><A NAME="545"></A>        addImageData(<FONT ID="StringLiteral">"UBC Logo"</FONT>, <FONT ID="StringLiteral">"/images/ubcLogo.PNG"</FONT>,
+<FONT ID="LN">546 </FONT><A NAME="546"></A>                ImageAccessor.DEFAULT_ALBUM_NAME);
+<FONT ID="LN">547 </FONT><A NAME="547"></A>        <FONT ID="SingleLineComment">// Add Gail
+<FONT ID="LN">548 </FONT><A NAME="548"></A></FONT>        addImageData(<FONT ID="StringLiteral">"Gail"</FONT>, <FONT ID="StringLiteral">"/images/Gail1.PNG"</FONT>,
+<FONT ID="LN">549 </FONT><A NAME="549"></A>                ImageAccessor.DEFAULT_ALBUM_NAME);
+<FONT ID="LN">550 </FONT><A NAME="550"></A>        <FONT ID="SingleLineComment">// Add JG
+<FONT ID="LN">551 </FONT><A NAME="551"></A></FONT>        addImageData(<FONT ID="StringLiteral">"J. Gosling"</FONT>, <FONT ID="StringLiteral">"/images/Gosling1.PNG"</FONT>,
+<FONT ID="LN">552 </FONT><A NAME="552"></A>                ImageAccessor.DEFAULT_ALBUM_NAME);
+<FONT ID="LN">553 </FONT><A NAME="553"></A>        <FONT ID="SingleLineComment">// Add GK
+<FONT ID="LN">554 </FONT><A NAME="554"></A></FONT>        addImageData(<FONT ID="StringLiteral">"Gregor"</FONT>, <FONT ID="StringLiteral">"/images/Gregor1.PNG"</FONT>,
+<FONT ID="LN">555 </FONT><A NAME="555"></A>                ImageAccessor.DEFAULT_ALBUM_NAME);
+<FONT ID="LN">556 </FONT><A NAME="556"></A>        <FONT ID="SingleLineComment">// Add KDV
+<FONT ID="LN">557 </FONT><A NAME="557"></A></FONT>        addImageData(<FONT ID="StringLiteral">"Kris"</FONT>, <FONT ID="StringLiteral">"/images/Kdvolder1.PNG"</FONT>,
+<FONT ID="LN">558 </FONT><A NAME="558"></A>                ImageAccessor.DEFAULT_ALBUM_NAME);
+<FONT ID="LN">559 </FONT><A NAME="559"></A>
+<FONT ID="LN">560 </FONT><A NAME="560"></A>    }
+<FONT ID="LN">561 </FONT><A NAME="561"></A>
+<FONT ID="LN">562 </FONT><A NAME="562"></A>    <FONT ID="Private">private</FONT> <FONT ID="Void">void</FONT> setAlbumData(<A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/filesystemmgr/impl/AlbumData.java.html">AlbumData</A> albumData) {
+<FONT ID="LN">563 </FONT><A NAME="563"></A>        <FONT ID="This">this</FONT>.albumData = albumData;
+<FONT ID="LN">564 </FONT><A NAME="564"></A>    }
+<FONT ID="LN">565 </FONT><A NAME="565"></A>
+<FONT ID="LN">566 </FONT><A NAME="566"></A>    <FONT ID="FormalComment">/**
+<FONT ID="LN">567 </FONT><A NAME="567"></A>     * Update the hashtable with new ImageInfo data
+<FONT ID="LN">568 </FONT><A NAME="568"></A>     */</FONT>
+<FONT ID="LN">569 </FONT><A NAME="569"></A>    <FONT ID="Private">private</FONT> <FONT ID="Void">void</FONT> setImageInfo(String imageName, <A HREF="../../../../../../../main/IImageData.java.html">IImageData</A> newData) {
+<FONT ID="LN">570 </FONT><A NAME="570"></A>        <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/filesystemmgr/impl/AlbumData.java.html">AlbumData</A> albumData = <FONT ID="This">this</FONT>.getAlbumData();
+<FONT ID="LN">571 </FONT><A NAME="571"></A>        albumData.getImageInfoTable().put(newData.getImageLabel(), newData);
+<FONT ID="LN">572 </FONT><A NAME="572"></A>
+<FONT ID="LN">573 </FONT><A NAME="573"></A>    }
+<FONT ID="LN">574 </FONT><A NAME="574"></A>
+<FONT ID="LN">575 </FONT><A NAME="575"></A>    <FONT ID="FormalComment">/**
+<FONT ID="LN">576 </FONT><A NAME="576"></A>     * Update the Image metadata associated with this named photo
+<FONT ID="LN">577 </FONT><A NAME="577"></A>     * @throws InvalidImageDataException 
+<FONT ID="LN">578 </FONT><A NAME="578"></A>     * @throws PersistenceMechanismException 
+<FONT ID="LN">579 </FONT><A NAME="579"></A>     */</FONT>
+<FONT ID="LN">580 </FONT><A NAME="580"></A>    <FONT ID="Protected">protected</FONT> <FONT ID="Boolean">boolean</FONT> updateImageInfo(<A HREF="../../../../../../../main/IImageData.java.html">IImageData</A> oldData, <A HREF="../../../../../../../main/IImageData.java.html">IImageData</A> newData) <FONT ID="Throws">throws</FONT> <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/filesystemmgr/spec/excep/InvalidImageDataException.java.html">InvalidImageDataException</A>, <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/filesystemmgr/spec/excep/PersistenceMechanismException.java.html">PersistenceMechanismException</A> {
+<FONT ID="LN">581 </FONT><A NAME="581"></A>
+<FONT ID="LN">582 </FONT><A NAME="582"></A>        <FONT ID="Boolean">boolean</FONT> success = <FONT ID="False">false</FONT>;
+<FONT ID="LN">583 </FONT><A NAME="583"></A>        RecordStore infoStore = <FONT ID="Null">null</FONT>;
+<FONT ID="LN">584 </FONT><A NAME="584"></A>        <FONT ID="Try">try</FONT> {
+<FONT ID="LN">585 </FONT><A NAME="585"></A>
+<FONT ID="LN">586 </FONT><A NAME="586"></A>            <FONT ID="SingleLineComment">// Parse the Data store name to get the Info store name
+<FONT ID="LN">587 </FONT><A NAME="587"></A></FONT>            String infoStoreName = oldData.getParentAlbumName();
+<FONT ID="LN">588 </FONT><A NAME="588"></A>            infoStoreName = ImageAccessor.INFO_LABEL
+<FONT ID="LN">589 </FONT><A NAME="589"></A>            + infoStoreName.substring(ImageAccessor.ALBUM_LABEL
+<FONT ID="LN">590 </FONT><A NAME="590"></A>                    .length());
+<FONT ID="LN">591 </FONT><A NAME="591"></A>            infoStore = RecordStore.openRecordStore(infoStoreName, <FONT ID="False">false</FONT>);
+<FONT ID="LN">592 </FONT><A NAME="592"></A>
+<FONT ID="LN">593 </FONT><A NAME="593"></A>            <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/filesystemmgr/impl/ImageUtil.java.html">ImageUtil</A> converter = <FONT ID="New">new</FONT> <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/filesystemmgr/impl/ImageUtil.java.html">ImageUtil</A>();
+<FONT ID="LN">594 </FONT><A NAME="594"></A>            <FONT ID="Byte">byte</FONT>[] imageDataBytes = converter.getBytesFromImageInfo(newData);
+<FONT ID="LN">595 </FONT><A NAME="595"></A>
+<FONT ID="LN">596 </FONT><A NAME="596"></A>            infoStore.setRecord(oldData.getRecordId(), imageDataBytes, <FONT ID="IntegerLiteral">0</FONT>,
+<FONT ID="LN">597 </FONT><A NAME="597"></A>                    imageDataBytes.length);
+<FONT ID="LN">598 </FONT><A NAME="598"></A>
+<FONT ID="LN">599 </FONT><A NAME="599"></A>        } <FONT ID="Catch">catch</FONT> (RecordStoreException rse) {
+<FONT ID="LN">600 </FONT><A NAME="600"></A>            <FONT ID="Throw">throw</FONT> <FONT ID="New">new</FONT> <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/filesystemmgr/spec/excep/PersistenceMechanismException.java.html">PersistenceMechanismException</A>(rse);
+<FONT ID="LN">601 </FONT><A NAME="601"></A>        }
+<FONT ID="LN">602 </FONT><A NAME="602"></A>
+<FONT ID="LN">603 </FONT><A NAME="603"></A>        <FONT ID="SingleLineComment">// Update the Hashtable 'cache'
+<FONT ID="LN">604 </FONT><A NAME="604"></A></FONT>        <FONT ID="This">this</FONT>.setImageInfo(oldData.getImageLabel(), newData);
+<FONT ID="LN">605 </FONT><A NAME="605"></A>
+<FONT ID="LN">606 </FONT><A NAME="606"></A>        <FONT ID="Try">try</FONT> {
+<FONT ID="LN">607 </FONT><A NAME="607"></A>            infoStore.closeRecordStore();
+<FONT ID="LN">608 </FONT><A NAME="608"></A>        } <FONT ID="Catch">catch</FONT> (RecordStoreNotOpenException e) {
+<FONT ID="LN">609 </FONT><A NAME="609"></A>            <FONT ID="SingleLineComment">//No problem if the RecordStore is not Open
+<FONT ID="LN">610 </FONT><A NAME="610"></A></FONT>        } <FONT ID="Catch">catch</FONT> (RecordStoreException e) {
+<FONT ID="LN">611 </FONT><A NAME="611"></A>            <FONT ID="Throw">throw</FONT> <FONT ID="New">new</FONT> <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/filesystemmgr/spec/excep/PersistenceMechanismException.java.html">PersistenceMechanismException</A>( e.getMessage() );
+<FONT ID="LN">612 </FONT><A NAME="612"></A>        }
+<FONT ID="LN">613 </FONT><A NAME="613"></A>
+<FONT ID="LN">614 </FONT><A NAME="614"></A>        <FONT ID="Return">return</FONT> success;
+<FONT ID="LN">615 </FONT><A NAME="615"></A>    }
+<FONT ID="LN">616 </FONT><A NAME="616"></A>}</pre>
+</BODY>
+</HTML>

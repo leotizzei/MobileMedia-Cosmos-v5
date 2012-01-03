@@ -1,0 +1,213 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<HTML>
+<HEAD>
+<LINK REL=STYLESHEET TYPE="text/css" HREF="../../../../../../../stylesheet.css" TITLE="Style">
+<META NAME="GENERATOR" CONTENT="Java2HTML Version 1.5">
+<TITLE>br.unicamp.ic.sed.mobilemedia.sms.impl.AbstractController (Java2HTML)</TITLE>
+</HEAD>
+<BODY><TABLE id="Header" border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td colspan="2" width="33%">&nbsp;</td>
+<td align="center" colspan="2" width="33%">
+<font size="4">AbstractController.java</font>
+</td>
+<td align="right" colspan="2" width="33%">&nbsp;</td>
+</tr>
+</TABLE>
+<pre ID="Classes">
+<FONT ID="LN">1   </FONT><A NAME="1"></A><FONT ID="MultiLineComment">/*
+<FONT ID="LN">2   </FONT><A NAME="2"></A> * University of Campinas - Brazil
+<FONT ID="LN">3   </FONT><A NAME="3"></A> * Institute of Computing
+<FONT ID="LN">4   </FONT><A NAME="4"></A> * SED group
+<FONT ID="LN">5   </FONT><A NAME="5"></A> * MobileMedia-Cosmos-OO-v4
+<FONT ID="LN">6   </FONT><A NAME="6"></A> * 
+<FONT ID="LN">7   </FONT><A NAME="7"></A> */</FONT>
+<FONT ID="LN">8   </FONT><A NAME="8"></A>
+<FONT ID="LN">9   </FONT><A NAME="9"></A><FONT ID="SingleLineComment">//#ifdef includeSmsFeature 
+<FONT ID="LN">10  </FONT><A NAME="10"></A></FONT>
+<FONT ID="LN">11  </FONT><A NAME="11"></A><FONT ID="MultiLineComment">/*begin - added in MobileMedia-Cosmos-OO-v4*/</FONT>
+<FONT ID="LN">12  </FONT><A NAME="12"></A><FONT ID="Package">package</FONT> br.unicamp.ic.sed.mobilemedia.sms.impl;
+<FONT ID="LN">13  </FONT><A NAME="13"></A>
+<FONT ID="LN">14  </FONT><A NAME="14"></A><FONT ID="Import">import</FONT> javax.microedition.lcdui.Alert;
+<FONT ID="LN">15  </FONT><A NAME="15"></A><FONT ID="Import">import</FONT> javax.microedition.lcdui.Command;
+<FONT ID="LN">16  </FONT><A NAME="16"></A><FONT ID="Import">import</FONT> javax.microedition.lcdui.CommandListener;
+<FONT ID="LN">17  </FONT><A NAME="17"></A><FONT ID="Import">import</FONT> javax.microedition.lcdui.Display;
+<FONT ID="LN">18  </FONT><A NAME="18"></A><FONT ID="Import">import</FONT> javax.microedition.lcdui.Displayable;
+<FONT ID="LN">19  </FONT><A NAME="19"></A><FONT ID="Import">import</FONT> javax.microedition.midlet.MIDlet;
+<FONT ID="LN">20  </FONT><A NAME="20"></A>
+<FONT ID="LN">21  </FONT><A NAME="21"></A><FONT ID="Import">import</FONT> <A HREF="../../../../../../../main/ControllerInterface.java.html">main.ControllerInterface</A>;
+<FONT ID="LN">22  </FONT><A NAME="22"></A>
+<FONT ID="LN">23  </FONT><A NAME="23"></A><FONT ID="Import">import</FONT> <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/filesystemmgr/spec/excep/ImageNotFoundException.java.html">br.unicamp.ic.sed.mobilemedia.filesystemmgr.spec.excep.ImageNotFoundException</A>;
+<FONT ID="LN">24  </FONT><A NAME="24"></A><FONT ID="Import">import</FONT> <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/filesystemmgr/spec/excep/NullAlbumDataReference.java.html">br.unicamp.ic.sed.mobilemedia.filesystemmgr.spec.excep.NullAlbumDataReference</A>;
+<FONT ID="LN">25  </FONT><A NAME="25"></A><FONT ID="Import">import</FONT> <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/filesystemmgr/spec/excep/PersistenceMechanismException.java.html">br.unicamp.ic.sed.mobilemedia.filesystemmgr.spec.excep.PersistenceMechanismException</A>;
+<FONT ID="LN">26  </FONT><A NAME="26"></A><FONT ID="Import">import</FONT> <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/sms/spec/prov/IManager.java.html">br.unicamp.ic.sed.mobilemedia.sms.spec.prov.IManager</A>;
+<FONT ID="LN">27  </FONT><A NAME="27"></A>
+<FONT ID="LN">28  </FONT><A NAME="28"></A>
+<FONT ID="LN">29  </FONT><A NAME="29"></A><FONT ID="SingleLineComment">//import br.unicamp.ic.sed.mobilemedia.album.impl.AlbumListScreen;
+<FONT ID="LN">30  </FONT><A NAME="30"></A></FONT>
+<FONT ID="LN">31  </FONT><A NAME="31"></A><FONT ID="Public">public</FONT> <FONT ID="Abstract">abstract</FONT> <FONT ID="Class">class</FONT> AbstractController <FONT ID="Implements">implements</FONT> CommandListener, <A HREF="../../../../../../../main/ControllerInterface.java.html">ControllerInterface</A> {
+<FONT ID="LN">32  </FONT><A NAME="32"></A>
+<FONT ID="LN">33  </FONT><A NAME="33"></A>    <FONT ID="Private">private</FONT> MIDlet midlet;
+<FONT ID="LN">34  </FONT><A NAME="34"></A>
+<FONT ID="LN">35  </FONT><A NAME="35"></A>    <FONT ID="SingleLineComment">//Define a successor to implement the Chain of Responsibility design pattern
+<FONT ID="LN">36  </FONT><A NAME="36"></A></FONT>    <FONT ID="Private">private</FONT> <A HREF="../../../../../../../main/ControllerInterface.java.html">ControllerInterface</A> nextController;
+<FONT ID="LN">37  </FONT><A NAME="37"></A>
+<FONT ID="LN">38  </FONT><A NAME="38"></A>    <FONT ID="MultiLineComment">/*private AlbumData albumData;*/</FONT>
+<FONT ID="LN">39  </FONT><A NAME="39"></A>
+<FONT ID="LN">40  </FONT><A NAME="40"></A>    <FONT ID="SingleLineComment">//Define the basic screens
+<FONT ID="LN">41  </FONT><A NAME="41"></A></FONT>
+<FONT ID="LN">42  </FONT><A NAME="42"></A>
+<FONT ID="LN">43  </FONT><A NAME="43"></A>    <FONT ID="FormalComment">/**
+<FONT ID="LN">44  </FONT><A NAME="44"></A>     * @param midlet
+<FONT ID="LN">45  </FONT><A NAME="45"></A>     * @param nextController
+<FONT ID="LN">46  </FONT><A NAME="46"></A>     * @param albumData
+<FONT ID="LN">47  </FONT><A NAME="47"></A>     * @param albumListScreen
+<FONT ID="LN">48  </FONT><A NAME="48"></A>     * @param currentScreenName
+<FONT ID="LN">49  </FONT><A NAME="49"></A>     */</FONT>
+<FONT ID="LN">50  </FONT><A NAME="50"></A>    <FONT ID="Public">public</FONT> AbstractController(MIDlet midlet) {
+<FONT ID="LN">51  </FONT><A NAME="51"></A>        <FONT ID="This">this</FONT>.midlet = midlet;
+<FONT ID="LN">52  </FONT><A NAME="52"></A>
+<FONT ID="LN">53  </FONT><A NAME="53"></A>        <FONT ID="SingleLineComment">// [EF] Senario 04: A singleton ScreenSingleton was created in order to all other access it. 
+<FONT ID="LN">54  </FONT><A NAME="54"></A></FONT>        <FONT ID="SingleLineComment">// [EF] I think some data need to be unique (e.g. currentScreenName) to make them consistent for all controllers.
+<FONT ID="LN">55  </FONT><A NAME="55"></A></FONT>    }
+<FONT ID="LN">56  </FONT><A NAME="56"></A>
+<FONT ID="LN">57  </FONT><A NAME="57"></A>    <FONT ID="MultiLineComment">/* (non-Javadoc)
+<FONT ID="LN">58  </FONT><A NAME="58"></A>     * @see ubc.midp.mobilephoto.core.ui.controller.ControllerInterface#postCommand(javax.microedition.lcdui.Command, javax.microedition.lcdui.Displayable)
+<FONT ID="LN">59  </FONT><A NAME="59"></A>     */</FONT>
+<FONT ID="LN">60  </FONT><A NAME="60"></A>    <FONT ID="Public">public</FONT> <FONT ID="Boolean">boolean</FONT> postCommand(Command command)  {
+<FONT ID="LN">61  </FONT><A NAME="61"></A>        System.out.println(<FONT ID="StringLiteral">"AbstractController::postCommand - Current controller is: "</FONT> + <FONT ID="This">this</FONT>.getClass().getName());
+<FONT ID="LN">62  </FONT><A NAME="62"></A>        System.out.println(<FONT ID="StringLiteral">"Command label="</FONT>+command.getLabel());
+<FONT ID="LN">63  </FONT><A NAME="63"></A>        <FONT ID="SingleLineComment">//If the current controller cannot handle the command, pass it to the next
+<FONT ID="LN">64  </FONT><A NAME="64"></A></FONT>        <FONT ID="SingleLineComment">//controller in the chain.
+<FONT ID="LN">65  </FONT><A NAME="65"></A></FONT>
+<FONT ID="LN">66  </FONT><A NAME="66"></A>        <FONT ID="Try">try</FONT> {
+<FONT ID="LN">67  </FONT><A NAME="67"></A>            <FONT ID="If">if</FONT> (handleCommand(command) == <FONT ID="False">false</FONT>) {
+<FONT ID="LN">68  </FONT><A NAME="68"></A>                <A HREF="../../../../../../../main/ControllerInterface.java.html">ControllerInterface</A> next = <FONT ID="This">this</FONT>.getNextController();
+<FONT ID="LN">69  </FONT><A NAME="69"></A>                <FONT ID="If">if</FONT> (next != <FONT ID="Null">null</FONT>) {
+<FONT ID="LN">70  </FONT><A NAME="70"></A>                    System.out.println(<FONT ID="StringLiteral">"Passing to next controller in chain: "</FONT> + next.getClass().getName());
+<FONT ID="LN">71  </FONT><A NAME="71"></A>                    <FONT ID="Return">return</FONT> next.postCommand(command);
+<FONT ID="LN">72  </FONT><A NAME="72"></A>                } <FONT ID="Else">else</FONT> {
+<FONT ID="LN">73  </FONT><A NAME="73"></A>                    System.out.println(<FONT ID="StringLiteral">"AbstractController::postCommand - Reached top of chain. No more handlers for command: "</FONT> + command.getLabel());
+<FONT ID="LN">74  </FONT><A NAME="74"></A>                    <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/sms/spec/prov/IManager.java.html">IManager</A> manager = ComponentFactory.createInstance();
+<FONT ID="LN">75  </FONT><A NAME="75"></A>                    
+<FONT ID="LN">76  </FONT><A NAME="76"></A>                    <FONT ID="SingleLineComment">//TODO call the next component to handle the command
+<FONT ID="LN">77  </FONT><A NAME="77"></A></FONT>                    <FONT ID="Return">return</FONT> <FONT ID="False">false</FONT>;
+<FONT ID="LN">78  </FONT><A NAME="78"></A>
+<FONT ID="LN">79  </FONT><A NAME="79"></A>                }
+<FONT ID="LN">80  </FONT><A NAME="80"></A>            }
+<FONT ID="LN">81  </FONT><A NAME="81"></A>        } <FONT ID="Catch">catch</FONT> (<A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/filesystemmgr/spec/excep/ImageNotFoundException.java.html">ImageNotFoundException</A> e) {
+<FONT ID="LN">82  </FONT><A NAME="82"></A>            <FONT ID="SingleLineComment">// TODO call exception handler
+<FONT ID="LN">83  </FONT><A NAME="83"></A></FONT>            e.printStackTrace();
+<FONT ID="LN">84  </FONT><A NAME="84"></A>        } <FONT ID="Catch">catch</FONT> (<A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/filesystemmgr/spec/excep/NullAlbumDataReference.java.html">NullAlbumDataReference</A> e) {
+<FONT ID="LN">85  </FONT><A NAME="85"></A>            <FONT ID="SingleLineComment">// TODO Auto-generated catch block
+<FONT ID="LN">86  </FONT><A NAME="86"></A></FONT>            e.printStackTrace();
+<FONT ID="LN">87  </FONT><A NAME="87"></A>        } <FONT ID="Catch">catch</FONT> (<A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/filesystemmgr/spec/excep/PersistenceMechanismException.java.html">PersistenceMechanismException</A> e) {
+<FONT ID="LN">88  </FONT><A NAME="88"></A>            <FONT ID="SingleLineComment">// TODO Auto-generated catch block
+<FONT ID="LN">89  </FONT><A NAME="89"></A></FONT>            e.printStackTrace();
+<FONT ID="LN">90  </FONT><A NAME="90"></A>        }
+<FONT ID="LN">91  </FONT><A NAME="91"></A>
+<FONT ID="LN">92  </FONT><A NAME="92"></A>        <FONT ID="Return">return</FONT> <FONT ID="False">false</FONT>;
+<FONT ID="LN">93  </FONT><A NAME="93"></A>
+<FONT ID="LN">94  </FONT><A NAME="94"></A>    }
+<FONT ID="LN">95  </FONT><A NAME="95"></A>
+<FONT ID="LN">96  </FONT><A NAME="96"></A>    <FONT ID="Public">public</FONT> <FONT ID="Abstract">abstract</FONT> <FONT ID="Boolean">boolean</FONT> handleCommand(Command c) <FONT ID="Throws">throws</FONT> <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/filesystemmgr/spec/excep/ImageNotFoundException.java.html">ImageNotFoundException</A>, <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/filesystemmgr/spec/excep/NullAlbumDataReference.java.html">NullAlbumDataReference</A>, <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/filesystemmgr/spec/excep/PersistenceMechanismException.java.html">PersistenceMechanismException</A>;
+<FONT ID="LN">97  </FONT><A NAME="97"></A>
+<FONT ID="LN">98  </FONT><A NAME="98"></A>    <FONT ID="MultiLineComment">/* 
+<FONT ID="LN">99  </FONT><A NAME="99"></A>     * Handle events. For now, this just passes control off to a 'wrapper'
+<FONT ID="LN">100 </FONT><A NAME="100"></A>     * so we can ensure, in order to use it in the aspect advice
+<FONT ID="LN">101 </FONT><A NAME="101"></A>     * (non-Javadoc)
+<FONT ID="LN">102 </FONT><A NAME="102"></A>     * @see javax.microedition.lcdui.CommandListener#commandAction(javax.microedition.lcdui.Command, javax.microedition.lcdui.Displayable)
+<FONT ID="LN">103 </FONT><A NAME="103"></A>     */</FONT>
+<FONT ID="LN">104 </FONT><A NAME="104"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> commandAction(Command c, Displayable d) {
+<FONT ID="LN">105 </FONT><A NAME="105"></A>        postCommand(c);
+<FONT ID="LN">106 </FONT><A NAME="106"></A>    }
+<FONT ID="LN">107 </FONT><A NAME="107"></A>
+<FONT ID="LN">108 </FONT><A NAME="108"></A>
+<FONT ID="LN">109 </FONT><A NAME="109"></A>    <FONT ID="Protected">protected</FONT> <FONT ID="Void">void</FONT> setAlbumListAsCurrentScreen(Alert a) {
+<FONT ID="LN">110 </FONT><A NAME="110"></A>        setCurrentScreen(a);
+<FONT ID="LN">111 </FONT><A NAME="111"></A>    }
+<FONT ID="LN">112 </FONT><A NAME="112"></A>
+<FONT ID="LN">113 </FONT><A NAME="113"></A>    <FONT ID="FormalComment">/**
+<FONT ID="LN">114 </FONT><A NAME="114"></A>     * Set the current screen for display, after alert
+<FONT ID="LN">115 </FONT><A NAME="115"></A>     */</FONT>
+<FONT ID="LN">116 </FONT><A NAME="116"></A>    <FONT ID="Protected">protected</FONT> <FONT ID="Void">void</FONT> setCurrentScreen(Alert a, Displayable d) {
+<FONT ID="LN">117 </FONT><A NAME="117"></A>        System.out.println(<FONT ID="StringLiteral">"midlet = "</FONT>+midlet);
+<FONT ID="LN">118 </FONT><A NAME="118"></A>        Display.getDisplay(midlet).setCurrent(a, d);
+<FONT ID="LN">119 </FONT><A NAME="119"></A>    } 
+<FONT ID="LN">120 </FONT><A NAME="120"></A>
+<FONT ID="LN">121 </FONT><A NAME="121"></A>    <FONT ID="FormalComment">/**
+<FONT ID="LN">122 </FONT><A NAME="122"></A>     * [EF] RENAMED in Scenario 04: remove "Name". Purpose: avoid method name conflict
+<FONT ID="LN">123 </FONT><A NAME="123"></A>     * Get the current screen name that is displayed
+<FONT ID="LN">124 </FONT><A NAME="124"></A>     */</FONT>
+<FONT ID="LN">125 </FONT><A NAME="125"></A>    <FONT ID="Protected">protected</FONT> Displayable getCurrentScreen() {
+<FONT ID="LN">126 </FONT><A NAME="126"></A>        <FONT ID="Return">return</FONT> Display.getDisplay(midlet).getCurrent();
+<FONT ID="LN">127 </FONT><A NAME="127"></A>    } 
+<FONT ID="LN">128 </FONT><A NAME="128"></A>
+<FONT ID="LN">129 </FONT><A NAME="129"></A>    <FONT ID="FormalComment">/**
+<FONT ID="LN">130 </FONT><A NAME="130"></A>     * Set the current screen for display
+<FONT ID="LN">131 </FONT><A NAME="131"></A>     */</FONT>
+<FONT ID="LN">132 </FONT><A NAME="132"></A>    <FONT ID="Protected">protected</FONT> <FONT ID="Void">void</FONT> setCurrentScreen(Displayable d) {
+<FONT ID="LN">133 </FONT><A NAME="133"></A>        System.out.println(<FONT ID="StringLiteral">"[AbstractController.setCurrentScreen(..)] midlet = "</FONT>+midlet);
+<FONT ID="LN">134 </FONT><A NAME="134"></A>        Display.getDisplay(midlet).setCurrent(d);
+<FONT ID="LN">135 </FONT><A NAME="135"></A>    } 
+<FONT ID="LN">136 </FONT><A NAME="136"></A>
+<FONT ID="LN">137 </FONT><A NAME="137"></A>    <FONT ID="FormalComment">/**
+<FONT ID="LN">138 </FONT><A NAME="138"></A>     * @return the albumData
+<FONT ID="LN">139 </FONT><A NAME="139"></A>     */</FONT><FONT ID="MultiLineComment">/*
+<FONT ID="LN">140 </FONT><A NAME="140"></A>    public AlbumData getAlbumData() {
+<FONT ID="LN">141 </FONT><A NAME="141"></A>        return albumData;
+<FONT ID="LN">142 </FONT><A NAME="142"></A>    }
+<FONT ID="LN">143 </FONT><A NAME="143"></A>
+<FONT ID="LN">144 </FONT><A NAME="144"></A>      */</FONT><FONT ID="FormalComment">/**
+<FONT ID="LN">145 </FONT><A NAME="145"></A>      * @param albumData the albumData to set
+<FONT ID="LN">146 </FONT><A NAME="146"></A>      */</FONT><FONT ID="MultiLineComment">/*
+<FONT ID="LN">147 </FONT><A NAME="147"></A>    public void setAlbumData(AlbumData albumData) {
+<FONT ID="LN">148 </FONT><A NAME="148"></A>        this.albumData = albumData;
+<FONT ID="LN">149 </FONT><A NAME="149"></A>    }*/</FONT>
+<FONT ID="LN">150 </FONT><A NAME="150"></A>
+<FONT ID="LN">151 </FONT><A NAME="151"></A>    <FONT ID="FormalComment">/**
+<FONT ID="LN">152 </FONT><A NAME="152"></A>     * @return the nextController
+<FONT ID="LN">153 </FONT><A NAME="153"></A>     */</FONT>
+<FONT ID="LN">154 </FONT><A NAME="154"></A>    <FONT ID="Public">public</FONT> <A HREF="../../../../../../../main/ControllerInterface.java.html">ControllerInterface</A> getNextController() {
+<FONT ID="LN">155 </FONT><A NAME="155"></A>        <FONT ID="Return">return</FONT> nextController;
+<FONT ID="LN">156 </FONT><A NAME="156"></A>    }
+<FONT ID="LN">157 </FONT><A NAME="157"></A>
+<FONT ID="LN">158 </FONT><A NAME="158"></A>    <FONT ID="FormalComment">/**
+<FONT ID="LN">159 </FONT><A NAME="159"></A>     * @param nextController the nextController to set
+<FONT ID="LN">160 </FONT><A NAME="160"></A>     */</FONT>
+<FONT ID="LN">161 </FONT><A NAME="161"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> setNextController(<A HREF="../../../../../../../main/ControllerInterface.java.html">ControllerInterface</A> nextController) {
+<FONT ID="LN">162 </FONT><A NAME="162"></A>        <FONT ID="If">if</FONT>( nextController != <FONT ID="Null">null</FONT>)
+<FONT ID="LN">163 </FONT><A NAME="163"></A>            System.out.println(<FONT ID="StringLiteral">"[AbstractController.setNextController] nextController="</FONT>+nextController.getClass().getName());
+<FONT ID="LN">164 </FONT><A NAME="164"></A>        <FONT ID="Else">else</FONT>
+<FONT ID="LN">165 </FONT><A NAME="165"></A>            System.out.println(<FONT ID="StringLiteral">"nextController is null!!!"</FONT>);
+<FONT ID="LN">166 </FONT><A NAME="166"></A>        <FONT ID="This">this</FONT>.nextController = nextController;
+<FONT ID="LN">167 </FONT><A NAME="167"></A>    }
+<FONT ID="LN">168 </FONT><A NAME="168"></A>
+<FONT ID="LN">169 </FONT><A NAME="169"></A>    <FONT ID="FormalComment">/**
+<FONT ID="LN">170 </FONT><A NAME="170"></A>     * [EF] Scenario 04: Just forward method.
+<FONT ID="LN">171 </FONT><A NAME="171"></A>     * @return the currentStoreName
+<FONT ID="LN">172 </FONT><A NAME="172"></A>     */</FONT>
+<FONT ID="LN">173 </FONT><A NAME="173"></A>    <FONT ID="Protected">protected</FONT> String getCurrentStoreName() {
+<FONT ID="LN">174 </FONT><A NAME="174"></A>        <FONT ID="Return">return</FONT> ScreenSingleton.getInstance().getCurrentStoreName();
+<FONT ID="LN">175 </FONT><A NAME="175"></A>    }
+<FONT ID="LN">176 </FONT><A NAME="176"></A>
+<FONT ID="LN">177 </FONT><A NAME="177"></A>    <FONT ID="FormalComment">/**
+<FONT ID="LN">178 </FONT><A NAME="178"></A>     * @return the albumListScreen
+<FONT ID="LN">179 </FONT><A NAME="179"></A>     */</FONT>
+<FONT ID="LN">180 </FONT><A NAME="180"></A>    <FONT ID="MultiLineComment">/*protected AlbumListScreen getAlbumListScreen() {
+<FONT ID="LN">181 </FONT><A NAME="181"></A>        return this.albumListScreen;
+<FONT ID="LN">182 </FONT><A NAME="182"></A>    }*/</FONT>
+<FONT ID="LN">183 </FONT><A NAME="183"></A>
+<FONT ID="LN">184 </FONT><A NAME="184"></A>    <FONT ID="Protected">protected</FONT> MIDlet getMidlet() {
+<FONT ID="LN">185 </FONT><A NAME="185"></A>        <FONT ID="Return">return</FONT> midlet;
+<FONT ID="LN">186 </FONT><A NAME="186"></A>    }
+<FONT ID="LN">187 </FONT><A NAME="187"></A>
+<FONT ID="LN">188 </FONT><A NAME="188"></A>    <FONT ID="Protected">protected</FONT> <FONT ID="Void">void</FONT> setMidlet(MIDlet midlet) {
+<FONT ID="LN">189 </FONT><A NAME="189"></A>        <FONT ID="This">this</FONT>.midlet = midlet;
+<FONT ID="LN">190 </FONT><A NAME="190"></A>    }
+<FONT ID="LN">191 </FONT><A NAME="191"></A>}
+<FONT ID="LN">192 </FONT><A NAME="192"></A><FONT ID="MultiLineComment">/*end - added in MobileMedia-Cosmos-OO-v4*/</FONT>
+<FONT ID="LN">193 </FONT><A NAME="193"></A>
+<FONT ID="LN">194 </FONT><A NAME="194"></A><FONT ID="SingleLineComment">//#endif</FONT></pre>
+</BODY>
+</HTML>

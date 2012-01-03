@@ -1,0 +1,276 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<HTML>
+<HEAD>
+<LINK REL=STYLESHEET TYPE="text/css" HREF="../../../../../../../stylesheet.css" TITLE="Style">
+<META NAME="GENERATOR" CONTENT="Java2HTML Version 1.5">
+<TITLE>br.unicamp.ic.sed.mobilemedia.filesystemmgr.impl.ImageUtil (Java2HTML)</TITLE>
+</HEAD>
+<BODY><TABLE id="Header" border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td colspan="2" width="33%">&nbsp;</td>
+<td align="center" colspan="2" width="33%">
+<font size="4">ImageUtil.java</font>
+</td>
+<td align="right" colspan="2" width="33%">&nbsp;</td>
+</tr>
+</TABLE>
+<pre ID="Classes">
+<FONT ID="LN">1   </FONT><A NAME="1"></A><FONT ID="Package">package</FONT> br.unicamp.ic.sed.mobilemedia.filesystemmgr.impl;
+<FONT ID="LN">2   </FONT><A NAME="2"></A>
+<FONT ID="LN">3   </FONT><A NAME="3"></A><FONT ID="Import">import</FONT> java.io.IOException;
+<FONT ID="LN">4   </FONT><A NAME="4"></A><FONT ID="Import">import</FONT> java.io.InputStream;
+<FONT ID="LN">5   </FONT><A NAME="5"></A>
+<FONT ID="LN">6   </FONT><A NAME="6"></A><FONT ID="Import">import</FONT> <A HREF="../../../../../../../main/IImageData.java.html">main.IImageData</A>;
+<FONT ID="LN">7   </FONT><A NAME="7"></A>
+<FONT ID="LN">8   </FONT><A NAME="8"></A><FONT ID="Import">import</FONT> <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/filesystemmgr/spec/dt/ImageData.java.html">br.unicamp.ic.sed.mobilemedia.filesystemmgr.spec.dt.ImageData</A>;
+<FONT ID="LN">9   </FONT><A NAME="9"></A><FONT ID="Import">import</FONT> <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/filesystemmgr/spec/excep/ImagePathNotValidException.java.html">br.unicamp.ic.sed.mobilemedia.filesystemmgr.spec.excep.ImagePathNotValidException</A>;
+<FONT ID="LN">10  </FONT><A NAME="10"></A><FONT ID="Import">import</FONT> <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/filesystemmgr/spec/excep/InvalidArrayFormatException.java.html">br.unicamp.ic.sed.mobilemedia.filesystemmgr.spec.excep.InvalidArrayFormatException</A>;
+<FONT ID="LN">11  </FONT><A NAME="11"></A><FONT ID="Import">import</FONT> <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/filesystemmgr/spec/excep/InvalidImageDataException.java.html">br.unicamp.ic.sed.mobilemedia.filesystemmgr.spec.excep.InvalidImageDataException</A>;
+<FONT ID="LN">12  </FONT><A NAME="12"></A><FONT ID="Import">import</FONT> <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/filesystemmgr/spec/excep/InvalidImageFormatException.java.html">br.unicamp.ic.sed.mobilemedia.filesystemmgr.spec.excep.InvalidImageFormatException</A>;
+<FONT ID="LN">13  </FONT><A NAME="13"></A>
+<FONT ID="LN">14  </FONT><A NAME="14"></A>
+<FONT ID="LN">15  </FONT><A NAME="15"></A><FONT ID="FormalComment">/**
+<FONT ID="LN">16  </FONT><A NAME="16"></A> * @author trevor This is a utility class. It performs conversions between Image
+<FONT ID="LN">17  </FONT><A NAME="17"></A> *         objects and byte arrays, and Image metadata objects and byte arrays.
+<FONT ID="LN">18  </FONT><A NAME="18"></A> *         Byte arrays are the main format for storing data in RMS, and for
+<FONT ID="LN">19  </FONT><A NAME="19"></A> *         sending data over the wire.
+<FONT ID="LN">20  </FONT><A NAME="20"></A> */</FONT>
+<FONT ID="LN">21  </FONT><A NAME="21"></A><FONT ID="Public">public</FONT> <FONT ID="Class">class</FONT> ImageUtil {
+<FONT ID="LN">22  </FONT><A NAME="22"></A>
+<FONT ID="LN">23  </FONT><A NAME="23"></A>    <FONT ID="SingleLineComment">// Delimiter used in record store data to separate fields in a string.
+<FONT ID="LN">24  </FONT><A NAME="24"></A></FONT>    <FONT ID="Private">private</FONT> <FONT ID="Static">static</FONT> <FONT ID="Final">final</FONT> String DELIMITER = <FONT ID="StringLiteral">"*"</FONT>;
+<FONT ID="LN">25  </FONT><A NAME="25"></A>
+<FONT ID="LN">26  </FONT><A NAME="26"></A>    <FONT ID="FormalComment">/**
+<FONT ID="LN">27  </FONT><A NAME="27"></A>     * Constructor
+<FONT ID="LN">28  </FONT><A NAME="28"></A>     */</FONT>
+<FONT ID="LN">29  </FONT><A NAME="29"></A>    <FONT ID="Public">public</FONT> ImageUtil() {
+<FONT ID="LN">30  </FONT><A NAME="30"></A>        <FONT ID="Super">super</FONT>();
+<FONT ID="LN">31  </FONT><A NAME="31"></A>    }
+<FONT ID="LN">32  </FONT><A NAME="32"></A>
+<FONT ID="LN">33  </FONT><A NAME="33"></A>    <FONT ID="FormalComment">/**
+<FONT ID="LN">34  </FONT><A NAME="34"></A>     * This method reads an Image from an Input Stream and converts it from a
+<FONT ID="LN">35  </FONT><A NAME="35"></A>     * standard image file format into a byte array, so that it can be
+<FONT ID="LN">36  </FONT><A NAME="36"></A>     * transported over wireless protocols such as SMS
+<FONT ID="LN">37  </FONT><A NAME="37"></A>     * 
+<FONT ID="LN">38  </FONT><A NAME="38"></A>     * @throws ImagePathNotValidException
+<FONT ID="LN">39  </FONT><A NAME="39"></A>     * @throws InvalidImageFormatException
+<FONT ID="LN">40  </FONT><A NAME="40"></A>     */</FONT>
+<FONT ID="LN">41  </FONT><A NAME="41"></A>    <FONT ID="Public">public</FONT> <FONT ID="Byte">byte</FONT>[] readImageAsByteArray(String imageFile)
+<FONT ID="LN">42  </FONT><A NAME="42"></A>            <FONT ID="Throws">throws</FONT> <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/filesystemmgr/spec/excep/ImagePathNotValidException.java.html">ImagePathNotValidException</A>, <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/filesystemmgr/spec/excep/InvalidImageFormatException.java.html">InvalidImageFormatException</A> {
+<FONT ID="LN">43  </FONT><A NAME="43"></A>
+<FONT ID="LN">44  </FONT><A NAME="44"></A>        <FONT ID="Byte">byte</FONT> bArray[] = <FONT ID="New">new</FONT> <FONT ID="Byte">byte</FONT>[<FONT ID="IntegerLiteral">1000</FONT>];
+<FONT ID="LN">45  </FONT><A NAME="45"></A>
+<FONT ID="LN">46  </FONT><A NAME="46"></A>        <FONT ID="SingleLineComment">// Read an Image into a byte array
+<FONT ID="LN">47  </FONT><A NAME="47"></A></FONT>        <FONT ID="SingleLineComment">// Required to transfer images over SMS
+<FONT ID="LN">48  </FONT><A NAME="48"></A></FONT>        InputStream is = <FONT ID="Null">null</FONT>;
+<FONT ID="LN">49  </FONT><A NAME="49"></A>        <FONT ID="Try">try</FONT> {
+<FONT ID="LN">50  </FONT><A NAME="50"></A>            is = (InputStream) <FONT ID="This">this</FONT>.getClass().getResourceAsStream(imageFile);
+<FONT ID="LN">51  </FONT><A NAME="51"></A>        } <FONT ID="Catch">catch</FONT> (Exception e) {
+<FONT ID="LN">52  </FONT><A NAME="52"></A>            <FONT ID="Throw">throw</FONT> <FONT ID="New">new</FONT> <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/filesystemmgr/spec/excep/ImagePathNotValidException.java.html">ImagePathNotValidException</A>(
+<FONT ID="LN">53  </FONT><A NAME="53"></A>                    <FONT ID="StringLiteral">"Path not valid for this image:"</FONT>+imageFile);
+<FONT ID="LN">54  </FONT><A NAME="54"></A>        }
+<FONT ID="LN">55  </FONT><A NAME="55"></A>
+<FONT ID="LN">56  </FONT><A NAME="56"></A>        <FONT ID="Int">int</FONT> i, len = <FONT ID="IntegerLiteral">0</FONT>;
+<FONT ID="LN">57  </FONT><A NAME="57"></A>        <FONT ID="Byte">byte</FONT> bArray2[];
+<FONT ID="LN">58  </FONT><A NAME="58"></A>        <FONT ID="Byte">byte</FONT> b[] = <FONT ID="New">new</FONT> <FONT ID="Byte">byte</FONT>[<FONT ID="IntegerLiteral">1</FONT>];
+<FONT ID="LN">59  </FONT><A NAME="59"></A>        <FONT ID="Try">try</FONT> {
+<FONT ID="LN">60  </FONT><A NAME="60"></A>            <FONT ID="While">while</FONT> (is.read(b) != -<FONT ID="IntegerLiteral">1</FONT>) {
+<FONT ID="LN">61  </FONT><A NAME="61"></A>
+<FONT ID="LN">62  </FONT><A NAME="62"></A>                <FONT ID="If">if</FONT> (len + <FONT ID="IntegerLiteral">1</FONT> &gt;= bArray.length) {
+<FONT ID="LN">63  </FONT><A NAME="63"></A>
+<FONT ID="LN">64  </FONT><A NAME="64"></A>                    bArray2 = <FONT ID="New">new</FONT> <FONT ID="Byte">byte</FONT>[bArray.length];
+<FONT ID="LN">65  </FONT><A NAME="65"></A>
+<FONT ID="LN">66  </FONT><A NAME="66"></A>                    <FONT ID="SingleLineComment">// Transfer all data from old array to temp array
+<FONT ID="LN">67  </FONT><A NAME="67"></A></FONT>                    <FONT ID="For">for</FONT> (i = <FONT ID="IntegerLiteral">0</FONT>; i &lt; len; i++)
+<FONT ID="LN">68  </FONT><A NAME="68"></A>                        bArray2[i] = bArray[i];
+<FONT ID="LN">69  </FONT><A NAME="69"></A>
+<FONT ID="LN">70  </FONT><A NAME="70"></A>                    bArray = <FONT ID="New">new</FONT> <FONT ID="Byte">byte</FONT>[bArray2.length + <FONT ID="IntegerLiteral">500</FONT>];
+<FONT ID="LN">71  </FONT><A NAME="71"></A>
+<FONT ID="LN">72  </FONT><A NAME="72"></A>                    <FONT ID="SingleLineComment">// Re-Copy contents back into new bigger array
+<FONT ID="LN">73  </FONT><A NAME="73"></A></FONT>                    <FONT ID="For">for</FONT> (i = <FONT ID="IntegerLiteral">0</FONT>; i &lt; len; i++)
+<FONT ID="LN">74  </FONT><A NAME="74"></A>                        bArray[i] = bArray2[i];
+<FONT ID="LN">75  </FONT><A NAME="75"></A>                }
+<FONT ID="LN">76  </FONT><A NAME="76"></A>
+<FONT ID="LN">77  </FONT><A NAME="77"></A>                <FONT ID="SingleLineComment">// Set the size to be exact
+<FONT ID="LN">78  </FONT><A NAME="78"></A></FONT>                bArray[len] = b[<FONT ID="IntegerLiteral">0</FONT>];
+<FONT ID="LN">79  </FONT><A NAME="79"></A>                len++;
+<FONT ID="LN">80  </FONT><A NAME="80"></A>            }
+<FONT ID="LN">81  </FONT><A NAME="81"></A>
+<FONT ID="LN">82  </FONT><A NAME="82"></A>            is.close();
+<FONT ID="LN">83  </FONT><A NAME="83"></A>        } <FONT ID="Catch">catch</FONT> (IOException e1) {
+<FONT ID="LN">84  </FONT><A NAME="84"></A>            <FONT ID="Throw">throw</FONT> <FONT ID="New">new</FONT> <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/filesystemmgr/spec/excep/InvalidImageFormatException.java.html">InvalidImageFormatException</A>(
+<FONT ID="LN">85  </FONT><A NAME="85"></A>                    <FONT ID="StringLiteral">"The file "</FONT>+imageFile+<FONT ID="StringLiteral">" does not have PNG format"</FONT>);
+<FONT ID="LN">86  </FONT><A NAME="86"></A>        } <FONT ID="Catch">catch</FONT>(NullPointerException e2){
+<FONT ID="LN">87  </FONT><A NAME="87"></A>            <FONT ID="Throw">throw</FONT> <FONT ID="New">new</FONT> <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/filesystemmgr/spec/excep/ImagePathNotValidException.java.html">ImagePathNotValidException</A>(
+<FONT ID="LN">88  </FONT><A NAME="88"></A>                    <FONT ID="StringLiteral">"Path not valid for this image:"</FONT>+imageFile);
+<FONT ID="LN">89  </FONT><A NAME="89"></A>        }
+<FONT ID="LN">90  </FONT><A NAME="90"></A>
+<FONT ID="LN">91  </FONT><A NAME="91"></A>        <FONT ID="Return">return</FONT> bArray;
+<FONT ID="LN">92  </FONT><A NAME="92"></A>    }
+<FONT ID="LN">93  </FONT><A NAME="93"></A>
+<FONT ID="LN">94  </FONT><A NAME="94"></A>    <FONT ID="FormalComment">/**
+<FONT ID="LN">95  </FONT><A NAME="95"></A>     * 
+<FONT ID="LN">96  </FONT><A NAME="96"></A>     * Convert the byte array from a retrieved RecordStore record into the
+<FONT ID="LN">97  </FONT><A NAME="97"></A>     * ImageInfo ((renamed ImageData) object Order of the string will look like
+<FONT ID="LN">98  </FONT><A NAME="98"></A>     * this: &lt;recordId&gt;*&lt;foreignRecordId&gt;*&lt;labelName&gt;*&lt;imageLabel&gt; Depending
+<FONT ID="LN">99  </FONT><A NAME="99"></A>     * on the optional features, additional fields may be: &lt;phoneNum&gt;
+<FONT ID="LN">100 </FONT><A NAME="100"></A>     * 
+<FONT ID="LN">101 </FONT><A NAME="101"></A>     * @throws InvalidArrayFormatException
+<FONT ID="LN">102 </FONT><A NAME="102"></A>     */</FONT>
+<FONT ID="LN">103 </FONT><A NAME="103"></A>    <FONT ID="Public">public</FONT> <A HREF="../../../../../../../main/IImageData.java.html">ImageData</A> getImageInfoFromBytes(<FONT ID="Byte">byte</FONT>[] bytes)
+<FONT ID="LN">104 </FONT><A NAME="104"></A>            <FONT ID="Throws">throws</FONT> <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/filesystemmgr/spec/excep/InvalidArrayFormatException.java.html">InvalidArrayFormatException</A> {
+<FONT ID="LN">105 </FONT><A NAME="105"></A>
+<FONT ID="LN">106 </FONT><A NAME="106"></A>        <FONT ID="Try">try</FONT> {
+<FONT ID="LN">107 </FONT><A NAME="107"></A>            String iiString = <FONT ID="New">new</FONT> String(bytes);
+<FONT ID="LN">108 </FONT><A NAME="108"></A>            
+<FONT ID="LN">109 </FONT><A NAME="109"></A>            System.out.println(iiString);
+<FONT ID="LN">110 </FONT><A NAME="110"></A>            
+<FONT ID="LN">111 </FONT><A NAME="111"></A>            <FONT ID="SingleLineComment">// Track our position in the String using delimiters
+<FONT ID="LN">112 </FONT><A NAME="112"></A></FONT>            <FONT ID="SingleLineComment">// Ie. Get chars from beginning of String to first Delim
+<FONT ID="LN">113 </FONT><A NAME="113"></A></FONT>            <FONT ID="Int">int</FONT> startIndex = <FONT ID="IntegerLiteral">0</FONT>;
+<FONT ID="LN">114 </FONT><A NAME="114"></A>            <FONT ID="Int">int</FONT> endIndex = iiString.indexOf(DELIMITER);
+<FONT ID="LN">115 </FONT><A NAME="115"></A>            
+<FONT ID="LN">116 </FONT><A NAME="116"></A>            <FONT ID="SingleLineComment">// Get recordID int value as String - everything before first
+<FONT ID="LN">117 </FONT><A NAME="117"></A></FONT>            <FONT ID="SingleLineComment">// delimeter
+<FONT ID="LN">118 </FONT><A NAME="118"></A></FONT>            <FONT ID="SingleLineComment">//System.out.println("[ImageUtil] startIndex:"+startIndex+" endIndex:"+endIndex);
+<FONT ID="LN">119 </FONT><A NAME="119"></A></FONT>            String intString = iiString.substring(startIndex, endIndex);
+<FONT ID="LN">120 </FONT><A NAME="120"></A>
+<FONT ID="LN">121 </FONT><A NAME="121"></A>            <FONT ID="SingleLineComment">// Get 'foreign' record ID corresponding to the image table
+<FONT ID="LN">122 </FONT><A NAME="122"></A></FONT>            startIndex = endIndex + <FONT ID="IntegerLiteral">1</FONT>;
+<FONT ID="LN">123 </FONT><A NAME="123"></A>            endIndex = iiString.indexOf(DELIMITER, startIndex);
+<FONT ID="LN">124 </FONT><A NAME="124"></A>            <FONT ID="SingleLineComment">//System.out.println("[ImageUtil] startIndex:"+startIndex+" endIndex:"+endIndex);
+<FONT ID="LN">125 </FONT><A NAME="125"></A></FONT>            String fidString = iiString.substring(startIndex, endIndex);
+<FONT ID="LN">126 </FONT><A NAME="126"></A>
+<FONT ID="LN">127 </FONT><A NAME="127"></A>            <FONT ID="SingleLineComment">// Get Album name (recordstore) - next delimeter
+<FONT ID="LN">128 </FONT><A NAME="128"></A></FONT>            startIndex = endIndex + <FONT ID="IntegerLiteral">1</FONT>;
+<FONT ID="LN">129 </FONT><A NAME="129"></A>            
+<FONT ID="LN">130 </FONT><A NAME="130"></A>            endIndex = iiString.indexOf(DELIMITER, startIndex);
+<FONT ID="LN">131 </FONT><A NAME="131"></A>            <FONT ID="SingleLineComment">//System.out.println("[ImageUtil] startIndex:"+startIndex+" endIndex:"+endIndex);
+<FONT ID="LN">132 </FONT><A NAME="132"></A></FONT>            String albumLabel = iiString.substring(startIndex, endIndex);
+<FONT ID="LN">133 </FONT><A NAME="133"></A>
+<FONT ID="LN">134 </FONT><A NAME="134"></A>            startIndex = endIndex + <FONT ID="IntegerLiteral">1</FONT>;
+<FONT ID="LN">135 </FONT><A NAME="135"></A>            
+<FONT ID="LN">136 </FONT><A NAME="136"></A>            endIndex = iiString.indexOf(DELIMITER, startIndex);
+<FONT ID="LN">137 </FONT><A NAME="137"></A>            
+<FONT ID="LN">138 </FONT><A NAME="138"></A>            <FONT ID="If">if</FONT> (endIndex == -<FONT ID="IntegerLiteral">1</FONT>)
+<FONT ID="LN">139 </FONT><A NAME="139"></A>                endIndex = iiString.length();
+<FONT ID="LN">140 </FONT><A NAME="140"></A>            
+<FONT ID="LN">141 </FONT><A NAME="141"></A>            String imageLabel = <FONT ID="StringLiteral">""</FONT>;
+<FONT ID="LN">142 </FONT><A NAME="142"></A>            <FONT ID="SingleLineComment">//System.out.println("[ImageUtil] startIndex:"+startIndex+" endIndex:"+endIndex);
+<FONT ID="LN">143 </FONT><A NAME="143"></A></FONT>            imageLabel = iiString.substring(startIndex, endIndex);
+<FONT ID="LN">144 </FONT><A NAME="144"></A>
+<FONT ID="LN">145 </FONT><A NAME="145"></A>            <FONT ID="SingleLineComment">// #ifdef includeFavourites
+<FONT ID="LN">146 </FONT><A NAME="146"></A></FONT>            <FONT ID="SingleLineComment">// [EF] Favorite (Scenario 03)
+<FONT ID="LN">147 </FONT><A NAME="147"></A></FONT>            <FONT ID="Boolean">boolean</FONT> favorite = <FONT ID="False">false</FONT>;
+<FONT ID="LN">148 </FONT><A NAME="148"></A>            startIndex = endIndex + <FONT ID="IntegerLiteral">1</FONT>;
+<FONT ID="LN">149 </FONT><A NAME="149"></A>            endIndex = iiString.indexOf(DELIMITER, startIndex);
+<FONT ID="LN">150 </FONT><A NAME="150"></A>            
+<FONT ID="LN">151 </FONT><A NAME="151"></A>            <FONT ID="If">if</FONT> (endIndex == -<FONT ID="IntegerLiteral">1</FONT>)
+<FONT ID="LN">152 </FONT><A NAME="152"></A>                endIndex = iiString.length(); 
+<FONT ID="LN">153 </FONT><A NAME="153"></A>            <FONT ID="SingleLineComment">//System.out.println("[ImageUtil] startIndex:"+startIndex+" endIndex:"+endIndex);
+<FONT ID="LN">154 </FONT><A NAME="154"></A></FONT>            favorite = (iiString.substring(startIndex, endIndex)).equalsIgnoreCase(<FONT ID="StringLiteral">"true"</FONT>);
+<FONT ID="LN">155 </FONT><A NAME="155"></A>            <FONT ID="SingleLineComment">// #endif
+<FONT ID="LN">156 </FONT><A NAME="156"></A></FONT>
+<FONT ID="LN">157 </FONT><A NAME="157"></A>            <FONT ID="SingleLineComment">// #ifdef includeSorting
+<FONT ID="LN">158 </FONT><A NAME="158"></A></FONT>            <FONT ID="SingleLineComment">// [EF] Number of Views (Scenario 02)
+<FONT ID="LN">159 </FONT><A NAME="159"></A></FONT>            startIndex = endIndex + <FONT ID="IntegerLiteral">1</FONT>;
+<FONT ID="LN">160 </FONT><A NAME="160"></A>            endIndex = iiString.indexOf(DELIMITER, startIndex);
+<FONT ID="LN">161 </FONT><A NAME="161"></A>
+<FONT ID="LN">162 </FONT><A NAME="162"></A>            <FONT ID="If">if</FONT> (endIndex == -<FONT ID="IntegerLiteral">1</FONT>)
+<FONT ID="LN">163 </FONT><A NAME="163"></A>                endIndex = iiString.length();
+<FONT ID="LN">164 </FONT><A NAME="164"></A>
+<FONT ID="LN">165 </FONT><A NAME="165"></A>            <FONT ID="Int">int</FONT> numberOfViews = <FONT ID="IntegerLiteral">0</FONT>;
+<FONT ID="LN">166 </FONT><A NAME="166"></A>            <FONT ID="Try">try</FONT> {
+<FONT ID="LN">167 </FONT><A NAME="167"></A>                <FONT ID="SingleLineComment">//System.out.println("[ImageUtil] startIndex:"+startIndex+" endIndex:"+endIndex);
+<FONT ID="LN">168 </FONT><A NAME="168"></A></FONT>                <FONT ID="If">if</FONT>( endIndex &lt; startIndex){
+<FONT ID="LN">169 </FONT><A NAME="169"></A>                    System.err.println(<FONT ID="StringLiteral">"Error: it was not possible to get the number of views"</FONT>);
+<FONT ID="LN">170 </FONT><A NAME="170"></A>                    numberOfViews = <FONT ID="IntegerLiteral">0</FONT>;
+<FONT ID="LN">171 </FONT><A NAME="171"></A>                }
+<FONT ID="LN">172 </FONT><A NAME="172"></A>                <FONT ID="Else">else</FONT>{
+<FONT ID="LN">173 </FONT><A NAME="173"></A>                    numberOfViews = Integer.parseInt(iiString.substring(startIndex, endIndex));
+<FONT ID="LN">174 </FONT><A NAME="174"></A>                }
+<FONT ID="LN">175 </FONT><A NAME="175"></A>            } <FONT ID="Catch">catch</FONT> (RuntimeException e) {
+<FONT ID="LN">176 </FONT><A NAME="176"></A>                numberOfViews = <FONT ID="IntegerLiteral">0</FONT>;
+<FONT ID="LN">177 </FONT><A NAME="177"></A>                <FONT ID="SingleLineComment">//System.out.println(e.getLocalizedMessage());
+<FONT ID="LN">178 </FONT><A NAME="178"></A></FONT>                System.out.println(<FONT ID="StringLiteral">"[ImageUtil]Error: index out of bounds!"</FONT> );
+<FONT ID="LN">179 </FONT><A NAME="179"></A>                e.printStackTrace();
+<FONT ID="LN">180 </FONT><A NAME="180"></A>            }
+<FONT ID="LN">181 </FONT><A NAME="181"></A>            <FONT ID="SingleLineComment">// #endif
+<FONT ID="LN">182 </FONT><A NAME="182"></A></FONT>                
+<FONT ID="LN">183 </FONT><A NAME="183"></A>            Integer x = Integer.valueOf(fidString);
+<FONT ID="LN">184 </FONT><A NAME="184"></A>            <A HREF="../../../../../../../main/IImageData.java.html">ImageData</A> ii = <FONT ID="New">new</FONT> <A HREF="../../../../../../../main/IImageData.java.html">ImageData</A>(x.intValue(), albumLabel, imageLabel);
+<FONT ID="LN">185 </FONT><A NAME="185"></A>            
+<FONT ID="LN">186 </FONT><A NAME="186"></A>            <FONT ID="SingleLineComment">// #ifdef includeFavourites
+<FONT ID="LN">187 </FONT><A NAME="187"></A></FONT>            ii.setFavorite(favorite);
+<FONT ID="LN">188 </FONT><A NAME="188"></A>            <FONT ID="SingleLineComment">// #endif
+<FONT ID="LN">189 </FONT><A NAME="189"></A></FONT>            
+<FONT ID="LN">190 </FONT><A NAME="190"></A>            <FONT ID="SingleLineComment">// #ifdef includeSorting
+<FONT ID="LN">191 </FONT><A NAME="191"></A></FONT>            ii.setNumberOfViews(numberOfViews);
+<FONT ID="LN">192 </FONT><A NAME="192"></A>            <FONT ID="SingleLineComment">// #endif
+<FONT ID="LN">193 </FONT><A NAME="193"></A></FONT>            
+<FONT ID="LN">194 </FONT><A NAME="194"></A>            x = Integer.valueOf(intString);
+<FONT ID="LN">195 </FONT><A NAME="195"></A>            ii.setRecordId(x.intValue());
+<FONT ID="LN">196 </FONT><A NAME="196"></A>            <FONT ID="Return">return</FONT> ii;
+<FONT ID="LN">197 </FONT><A NAME="197"></A>        } <FONT ID="Catch">catch</FONT> (Exception e) {
+<FONT ID="LN">198 </FONT><A NAME="198"></A>            <FONT ID="Throw">throw</FONT> <FONT ID="New">new</FONT> <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/filesystemmgr/spec/excep/InvalidArrayFormatException.java.html">InvalidArrayFormatException</A>( e.getMessage() );
+<FONT ID="LN">199 </FONT><A NAME="199"></A>        }
+<FONT ID="LN">200 </FONT><A NAME="200"></A>    }
+<FONT ID="LN">201 </FONT><A NAME="201"></A>
+<FONT ID="LN">202 </FONT><A NAME="202"></A>    <FONT ID="FormalComment">/**
+<FONT ID="LN">203 </FONT><A NAME="203"></A>     * 
+<FONT ID="LN">204 </FONT><A NAME="204"></A>     * Convert the ImageInfo (renamed ImageData) object into bytes so we can
+<FONT ID="LN">205 </FONT><A NAME="205"></A>     * store it in RMS Order of the string will look like this: &lt;recordId&gt;*&lt;foreignRecordId&gt;*&lt;labelName&gt;*&lt;imageLabel&gt;
+<FONT ID="LN">206 </FONT><A NAME="206"></A>     * Depending on the optional features, additional fields may be: &lt;phoneNum&gt;
+<FONT ID="LN">207 </FONT><A NAME="207"></A>     * @throws InvalidImageDataException 
+<FONT ID="LN">208 </FONT><A NAME="208"></A>     */</FONT>
+<FONT ID="LN">209 </FONT><A NAME="209"></A>    <FONT ID="Public">public</FONT> <FONT ID="Byte">byte</FONT>[] getBytesFromImageInfo(<A HREF="../../../../../../../main/IImageData.java.html">IImageData</A> ii) <FONT ID="Throws">throws</FONT> <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/filesystemmgr/spec/excep/InvalidImageDataException.java.html">InvalidImageDataException</A> {
+<FONT ID="LN">210 </FONT><A NAME="210"></A>
+<FONT ID="LN">211 </FONT><A NAME="211"></A>        <FONT ID="SingleLineComment">// Take each String and get the bytes from it, separating fields with a
+<FONT ID="LN">212 </FONT><A NAME="212"></A></FONT>        <FONT ID="SingleLineComment">// delimiter
+<FONT ID="LN">213 </FONT><A NAME="213"></A></FONT>        <FONT ID="Try">try</FONT> {
+<FONT ID="LN">214 </FONT><A NAME="214"></A>            String byteString = <FONT ID="New">new</FONT> String();
+<FONT ID="LN">215 </FONT><A NAME="215"></A>
+<FONT ID="LN">216 </FONT><A NAME="216"></A>            <FONT ID="SingleLineComment">// Convert the record ID for this record
+<FONT ID="LN">217 </FONT><A NAME="217"></A></FONT>            <FONT ID="Int">int</FONT> i = ii.getRecordId();
+<FONT ID="LN">218 </FONT><A NAME="218"></A>            Integer j = <FONT ID="New">new</FONT> Integer(i);
+<FONT ID="LN">219 </FONT><A NAME="219"></A>            byteString = byteString.concat(j.toString());
+<FONT ID="LN">220 </FONT><A NAME="220"></A>            byteString = byteString.concat(DELIMITER);
+<FONT ID="LN">221 </FONT><A NAME="221"></A>
+<FONT ID="LN">222 </FONT><A NAME="222"></A>            <FONT ID="SingleLineComment">// Convert the 'Foreign' Record ID field for the corresponding Image
+<FONT ID="LN">223 </FONT><A NAME="223"></A></FONT>            <FONT ID="SingleLineComment">// record store
+<FONT ID="LN">224 </FONT><A NAME="224"></A></FONT>            <FONT ID="Int">int</FONT> i2 = ii.getForeignRecordId();
+<FONT ID="LN">225 </FONT><A NAME="225"></A>            Integer j2 = <FONT ID="New">new</FONT> Integer(i2);
+<FONT ID="LN">226 </FONT><A NAME="226"></A>            byteString = byteString.concat(j2.toString());
+<FONT ID="LN">227 </FONT><A NAME="227"></A>            byteString = byteString.concat(DELIMITER);
+<FONT ID="LN">228 </FONT><A NAME="228"></A>
+<FONT ID="LN">229 </FONT><A NAME="229"></A>            <FONT ID="SingleLineComment">// Convert the album name field
+<FONT ID="LN">230 </FONT><A NAME="230"></A></FONT>            byteString = byteString.concat(ii.getParentAlbumName());
+<FONT ID="LN">231 </FONT><A NAME="231"></A>            byteString = byteString.concat(DELIMITER);
+<FONT ID="LN">232 </FONT><A NAME="232"></A>
+<FONT ID="LN">233 </FONT><A NAME="233"></A>            <FONT ID="SingleLineComment">// Convert the label (name) field
+<FONT ID="LN">234 </FONT><A NAME="234"></A></FONT>            byteString = byteString.concat(ii.getImageLabel());
+<FONT ID="LN">235 </FONT><A NAME="235"></A>
+<FONT ID="LN">236 </FONT><A NAME="236"></A>            <FONT ID="SingleLineComment">// #ifdef includeFavourites
+<FONT ID="LN">237 </FONT><A NAME="237"></A></FONT>            <FONT ID="SingleLineComment">// [EF] Added in scenario 03
+<FONT ID="LN">238 </FONT><A NAME="238"></A></FONT>            byteString = byteString.concat(DELIMITER);
+<FONT ID="LN">239 </FONT><A NAME="239"></A>            <FONT ID="If">if</FONT> (ii.isFavorite()) byteString = byteString.concat(<FONT ID="StringLiteral">"true"</FONT>);
+<FONT ID="LN">240 </FONT><A NAME="240"></A>            <FONT ID="Else">else</FONT> byteString = byteString.concat(<FONT ID="StringLiteral">"false"</FONT>);
+<FONT ID="LN">241 </FONT><A NAME="241"></A>            <FONT ID="SingleLineComment">// #endif
+<FONT ID="LN">242 </FONT><A NAME="242"></A></FONT>
+<FONT ID="LN">243 </FONT><A NAME="243"></A>            <FONT ID="SingleLineComment">// #ifdef includeSorting
+<FONT ID="LN">244 </FONT><A NAME="244"></A></FONT>            <FONT ID="SingleLineComment">// [EF] Added in scenario 02
+<FONT ID="LN">245 </FONT><A NAME="245"></A></FONT>            byteString = byteString.concat(DELIMITER);
+<FONT ID="LN">246 </FONT><A NAME="246"></A>            byteString = byteString.concat(<FONT ID="StringLiteral">""</FONT>+ii.getNumberOfViews());
+<FONT ID="LN">247 </FONT><A NAME="247"></A>            <FONT ID="SingleLineComment">// #endif
+<FONT ID="LN">248 </FONT><A NAME="248"></A></FONT>            
+<FONT ID="LN">249 </FONT><A NAME="249"></A>            <FONT ID="SingleLineComment">// Convert the phone number field
+<FONT ID="LN">250 </FONT><A NAME="250"></A></FONT>            <FONT ID="Return">return</FONT> byteString.getBytes();
+<FONT ID="LN">251 </FONT><A NAME="251"></A>        } <FONT ID="Catch">catch</FONT> (Exception e) {
+<FONT ID="LN">252 </FONT><A NAME="252"></A>            <FONT ID="Throw">throw</FONT> <FONT ID="New">new</FONT> <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/filesystemmgr/spec/excep/InvalidImageDataException.java.html">InvalidImageDataException</A>(<FONT ID="StringLiteral">"The provided data are not valid"</FONT>);
+<FONT ID="LN">253 </FONT><A NAME="253"></A>        }
+<FONT ID="LN">254 </FONT><A NAME="254"></A>
+<FONT ID="LN">255 </FONT><A NAME="255"></A>    }
+<FONT ID="LN">256 </FONT><A NAME="256"></A>
+<FONT ID="LN">257 </FONT><A NAME="257"></A>}</pre>
+</BODY>
+</HTML>

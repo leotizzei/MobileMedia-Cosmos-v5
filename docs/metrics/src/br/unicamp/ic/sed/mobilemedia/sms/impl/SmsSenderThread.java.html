@@ -1,0 +1,93 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<HTML>
+<HEAD>
+<LINK REL=STYLESHEET TYPE="text/css" HREF="../../../../../../../stylesheet.css" TITLE="Style">
+<META NAME="GENERATOR" CONTENT="Java2HTML Version 1.5">
+<TITLE>br.unicamp.ic.sed.mobilemedia.sms.impl.SmsSenderThread (Java2HTML)</TITLE>
+</HEAD>
+<BODY><TABLE id="Header" border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td colspan="2" width="33%">&nbsp;</td>
+<td align="center" colspan="2" width="33%">
+<font size="4">SmsSenderThread.java</font>
+</td>
+<td align="right" colspan="2" width="33%">&nbsp;</td>
+</tr>
+</TABLE>
+<pre ID="Classes">
+<FONT ID="LN">1   </FONT><A NAME="1"></A>
+<FONT ID="LN">2   </FONT><A NAME="2"></A><FONT ID="SingleLineComment">//#ifdef includeSmsFeature 
+<FONT ID="LN">3   </FONT><A NAME="3"></A></FONT><FONT ID="Package">package</FONT> br.unicamp.ic.sed.mobilemedia.sms.impl;
+<FONT ID="LN">4   </FONT><A NAME="4"></A>
+<FONT ID="LN">5   </FONT><A NAME="5"></A>
+<FONT ID="LN">6   </FONT><A NAME="6"></A><FONT ID="FormalComment">/**
+<FONT ID="LN">7   </FONT><A NAME="7"></A> * Prompts for text and sends it via an SMS MessageConnection
+<FONT ID="LN">8   </FONT><A NAME="8"></A> */</FONT>
+<FONT ID="LN">9   </FONT><A NAME="9"></A><FONT ID="Public">public</FONT> <FONT ID="Class">class</FONT> SmsSenderThread <FONT ID="Implements">implements</FONT> Runnable { <FONT ID="SingleLineComment">//extends BaseThread {
+<FONT ID="LN">10  </FONT><A NAME="10"></A></FONT>    
+<FONT ID="LN">11  </FONT><A NAME="11"></A>    <FONT ID="Private">private</FONT> String smsPort;
+<FONT ID="LN">12  </FONT><A NAME="12"></A>    <FONT ID="FormalComment">/** The URL to send the message to */</FONT>
+<FONT ID="LN">13  </FONT><A NAME="13"></A>    <FONT ID="Private">private</FONT> String destinationAddress;  
+<FONT ID="LN">14  </FONT><A NAME="14"></A>    <FONT ID="Private">private</FONT> String messageText = <FONT ID="StringLiteral">"default"</FONT>;
+<FONT ID="LN">15  </FONT><A NAME="15"></A>    <FONT ID="Private">private</FONT> <FONT ID="Byte">byte</FONT>[] binData;
+<FONT ID="LN">16  </FONT><A NAME="16"></A>    
+<FONT ID="LN">17  </FONT><A NAME="17"></A>
+<FONT ID="LN">18  </FONT><A NAME="18"></A>    <FONT ID="Public">public</FONT> SmsSenderThread(String smsPort, String destinationAddress, String messageText) {
+<FONT ID="LN">19  </FONT><A NAME="19"></A>
+<FONT ID="LN">20  </FONT><A NAME="20"></A>        System.out.println(<FONT ID="StringLiteral">"SmsSenderThread:: 3 Param Constructor: "</FONT> + smsPort + <FONT ID="StringLiteral">","</FONT> + destinationAddress + <FONT ID="StringLiteral">","</FONT> + messageText);
+<FONT ID="LN">21  </FONT><A NAME="21"></A>        <FONT ID="This">this</FONT>.messageText = messageText;
+<FONT ID="LN">22  </FONT><A NAME="22"></A>        <FONT ID="This">this</FONT>.destinationAddress = destinationAddress;
+<FONT ID="LN">23  </FONT><A NAME="23"></A>        <FONT ID="This">this</FONT>.smsPort = smsPort;
+<FONT ID="LN">24  </FONT><A NAME="24"></A>    }
+<FONT ID="LN">25  </FONT><A NAME="25"></A>
+<FONT ID="LN">26  </FONT><A NAME="26"></A>    <FONT ID="FormalComment">/**
+<FONT ID="LN">27  </FONT><A NAME="27"></A>     * Send the message. Called on a separate thread so we don't have
+<FONT ID="LN">28  </FONT><A NAME="28"></A>     * contention for the display
+<FONT ID="LN">29  </FONT><A NAME="29"></A>     */</FONT>
+<FONT ID="LN">30  </FONT><A NAME="30"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> run() {
+<FONT ID="LN">31  </FONT><A NAME="31"></A>        
+<FONT ID="LN">32  </FONT><A NAME="32"></A>        System.out.println(<FONT ID="StringLiteral">"SmsSenderThread::run: Sending message: "</FONT> + messageText + <FONT ID="StringLiteral">" to: "</FONT> + destinationAddress);
+<FONT ID="LN">33  </FONT><A NAME="33"></A>        <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/sms/impl/SmsMessaging.java.html">SmsMessaging</A> smsMessenger = <FONT ID="New">new</FONT> <A HREF="../../../../../../../br/unicamp/ic/sed/mobilemedia/sms/impl/SmsMessaging.java.html">SmsMessaging</A>(smsPort, destinationAddress);
+<FONT ID="LN">34  </FONT><A NAME="34"></A>        smsMessenger.sendImage(<FONT ID="This">this</FONT>.binData);
+<FONT ID="LN">35  </FONT><A NAME="35"></A>        System.out.println(<FONT ID="StringLiteral">"Finishing SMSSender run()"</FONT>);
+<FONT ID="LN">36  </FONT><A NAME="36"></A>    }
+<FONT ID="LN">37  </FONT><A NAME="37"></A>    
+<FONT ID="LN">38  </FONT><A NAME="38"></A>    <FONT ID="FormalComment">/**
+<FONT ID="LN">39  </FONT><A NAME="39"></A>     * @return Returns the messageText.
+<FONT ID="LN">40  </FONT><A NAME="40"></A>     */</FONT>
+<FONT ID="LN">41  </FONT><A NAME="41"></A>    <FONT ID="Public">public</FONT> String getMessageText() {
+<FONT ID="LN">42  </FONT><A NAME="42"></A>
+<FONT ID="LN">43  </FONT><A NAME="43"></A>        <FONT ID="Return">return</FONT> messageText;
+<FONT ID="LN">44  </FONT><A NAME="44"></A>    }
+<FONT ID="LN">45  </FONT><A NAME="45"></A>    <FONT ID="FormalComment">/**
+<FONT ID="LN">46  </FONT><A NAME="46"></A>     * @param messageText The messageText to set.
+<FONT ID="LN">47  </FONT><A NAME="47"></A>     */</FONT>
+<FONT ID="LN">48  </FONT><A NAME="48"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> setMessageText(String messageText) {
+<FONT ID="LN">49  </FONT><A NAME="49"></A>
+<FONT ID="LN">50  </FONT><A NAME="50"></A>        <FONT ID="This">this</FONT>.messageText = messageText;
+<FONT ID="LN">51  </FONT><A NAME="51"></A>    }
+<FONT ID="LN">52  </FONT><A NAME="52"></A>    
+<FONT ID="LN">53  </FONT><A NAME="53"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> setBinaryData(<FONT ID="Byte">byte</FONT>[] data) {
+<FONT ID="LN">54  </FONT><A NAME="54"></A>
+<FONT ID="LN">55  </FONT><A NAME="55"></A>        System.out.println(<FONT ID="StringLiteral">"SmsSenderThread: setBinaryData of length: "</FONT> + data.length);
+<FONT ID="LN">56  </FONT><A NAME="56"></A>        <FONT ID="This">this</FONT>.binData = data;
+<FONT ID="LN">57  </FONT><A NAME="57"></A>    }
+<FONT ID="LN">58  </FONT><A NAME="58"></A>    
+<FONT ID="LN">59  </FONT><A NAME="59"></A>    <FONT ID="FormalComment">/**
+<FONT ID="LN">60  </FONT><A NAME="60"></A>     * @return Returns the smsPort.
+<FONT ID="LN">61  </FONT><A NAME="61"></A>     */</FONT>
+<FONT ID="LN">62  </FONT><A NAME="62"></A>    <FONT ID="Public">public</FONT> String getSmsPort() {
+<FONT ID="LN">63  </FONT><A NAME="63"></A>
+<FONT ID="LN">64  </FONT><A NAME="64"></A>        <FONT ID="Return">return</FONT> smsPort;
+<FONT ID="LN">65  </FONT><A NAME="65"></A>    }
+<FONT ID="LN">66  </FONT><A NAME="66"></A>    <FONT ID="FormalComment">/**
+<FONT ID="LN">67  </FONT><A NAME="67"></A>     * @param smsPort The smsPort to set.
+<FONT ID="LN">68  </FONT><A NAME="68"></A>     */</FONT>
+<FONT ID="LN">69  </FONT><A NAME="69"></A>    <FONT ID="Public">public</FONT> <FONT ID="Void">void</FONT> setSmsPort(String smsPort) {
+<FONT ID="LN">70  </FONT><A NAME="70"></A>
+<FONT ID="LN">71  </FONT><A NAME="71"></A>        <FONT ID="This">this</FONT>.smsPort = smsPort;
+<FONT ID="LN">72  </FONT><A NAME="72"></A>    }
+<FONT ID="LN">73  </FONT><A NAME="73"></A>}
+<FONT ID="LN">74  </FONT><A NAME="74"></A><FONT ID="SingleLineComment">//#endif</FONT></pre>
+</BODY>
+</HTML>
